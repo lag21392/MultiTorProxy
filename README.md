@@ -1,5 +1,5 @@
 # MultiTorProxy
-Programa para usar muchas redes TOR en distintas aplicaciones o todo el Windows 10
+Programa para usar muchas redes TOR en distintas aplicaciones o todo el Windows 10. Ideal para tener gran seguridad, ser inrastreable y saltearse alguna que otra seguridad.
 
 Imagenes del programa:
 
