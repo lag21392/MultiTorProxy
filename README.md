@@ -3,13 +3,14 @@ Programa para usar muchas redes TOR en distintas aplicaciones o todo el Windows 
 
 Imagenes del programa:
 
-![1](https://raw.githubusercontent.com/lag21392/MultiTorProxy/blob/master/1.PNG)
 
-![2](https://raw.githubusercontent.com/lag21392/MultiTorProxy/blob/master/2.PNG)
+![1](1.PNG?raw=true)
 
-![3](https://raw.githubusercontent.com/lag21392/MultiTorProxy/blob/master/3.PNG)
+![2](2.PNG?raw=true)
 
-![4](https://raw.githubusercontent.com/lag21392/MultiTorProxy/blob/master/4.PNG)
+![3](3.PNG?raw=true)
 
-![5](https://raw.githubusercontent.com/lag21392/MultiTorProxy/blob/master/5.PNG)
+![4](4.PNG?raw=true)
+
+![5](5.PNG?raw=true)
 
