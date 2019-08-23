@@ -1,0 +1,58 @@
+# Tor state file last generated on 2019-08-21 23:55:55 local time
+# Other times below are in UTC
+# You *do not* need to edit this file.
+
+Guard in=default rsa_id=126B4C9F0964D7F68467D2CD641528BEACF89977 nickname=hellzone sampled_on=2019-08-19T15:05:11 sampled_by=0.4.0.5 listed=1
+Guard in=default rsa_id=599A708756048993A1029B2775EEF8C9E40BB640 nickname=FalkensteinTor03 sampled_on=2019-08-17T05:47:13 sampled_by=0.4.0.5 listed=1 confirmed_on=2019-08-12T14:20:39 confirmed_idx=2
+Guard in=default rsa_id=47553D701023D16D9949A85E3F43FD799E697481 nickname=johexrelay sampled_on=2019-08-15T20:38:53 sampled_by=0.4.0.5 listed=1
+Guard in=default rsa_id=64A0B5722613DDFC2EB84897C550FBF4A096DE0D nickname=NeyamRelay sampled_on=2019-08-20T08:01:18 sampled_by=0.4.0.5 listed=1
+Guard in=default rsa_id=7E317CFA44E7B6013DE4BC5F837C376A77179C72 nickname=15T01 sampled_on=2019-08-16T14:01:25 sampled_by=0.4.0.5 listed=1
+Guard in=default rsa_id=E13F7EE1535ED8AEAB92A5EEAEE9A0C782ED33E2 nickname=ipheiboqu8oorai8Ais sampled_on=2019-08-16T00:15:58 sampled_by=0.4.0.5 listed=1
+Guard in=default rsa_id=53E97C2CE093784EC509682B42D576152180E956 nickname=PicklePower sampled_on=2019-08-18T04:04:40 sampled_by=0.4.0.5 listed=1
+Guard in=default rsa_id=E8EBF00943C372C5817248F88189CCC8720FE602 nickname=ididnteditheconfig sampled_on=2019-08-19T00:01:46 sampled_by=0.4.0.5 listed=1
+Guard in=default rsa_id=24F97F98C45E4754655BE66799049763DAEE99CE nickname=cosimaniehaus sampled_on=2019-08-17T09:08:33 sampled_by=0.4.0.5 listed=1
+Guard in=default rsa_id=DD5DA21CC5036533AE2010DE2C7E72BE2CDF9C5E nickname=Unnamed sampled_on=2019-08-19T20:15:08 sampled_by=0.4.0.5 listed=1 confirmed_on=2019-08-15T01:14:43 confirmed_idx=1
+Guard in=default rsa_id=76D2EBA82BBCCA3DF9F254A9A8372A10A26F3D14 nickname=pinselohrkatze00 sampled_on=2019-08-11T12:38:13 sampled_by=0.4.0.5 listed=1
+Guard in=default rsa_id=E432C6B90254DD0675F86D3E4D5F3A2CA100DE8B nickname=Haggar sampled_on=2019-08-15T14:43:13 sampled_by=0.4.0.5 listed=1
+Guard in=default rsa_id=3F065BB0B02FB2303E144383D16C47A7DED75AE7 nickname=joszef sampled_on=2019-08-14T22:14:10 sampled_by=0.4.0.5 listed=1
+Guard in=default rsa_id=0DD0EEB88CDD23AF14194AC17CB6676D78B04FD1 nickname=DelterserverTorNet1 sampled_on=2019-08-13T20:49:53 sampled_by=0.4.0.5 listed=1
+Guard in=default rsa_id=510176C07005D47B23E6796F02C93241A29AA0E9 nickname=torpidsUSwholesale sampled_on=2019-08-20T23:51:14 sampled_by=0.4.0.5 listed=1
+Guard in=default rsa_id=96372F7EF91A878F5DDDEF5F15F1DF4125DA993A nickname=highwind sampled_on=2019-08-22T01:03:30 sampled_by=0.4.0.5 listed=1
+Guard in=default rsa_id=A6BBD33695A4E3C4545BA370605A4DCD87D98BEE nickname=ATLANTIS sampled_on=2019-08-13T01:34:33 sampled_by=0.4.0.5 listed=1 confirmed_on=2019-08-18T02:55:33 confirmed_idx=0 pb_use_attempts=17.000000 pb_use_successes=17.000000 pb_circ_attempts=104.000000 pb_circ_successes=100.000000 pb_successful_circuits_closed=100.000000 pb_timeouts=3.000000
+Guard in=default rsa_id=ABD79CFBE14253B39690D14CA6AC2516D1EF6A3A nickname=eclipse07 sampled_on=2019-08-11T00:07:58 sampled_by=0.4.0.5 listed=1
+Guard in=default rsa_id=F0B89C301D3C7D98066BBB99F2C32C5A1C27F31C nickname=Unnamed sampled_on=2019-08-20T07:45:06 sampled_by=0.4.0.5 listed=1
+Guard in=default rsa_id=DC30BFD22540BEC0AEC497780E5981B5584F3033 nickname=Extragornax sampled_on=2019-08-10T10:45:29 sampled_by=0.4.0.5 listed=1
+TorVersion Tor 0.4.0.5 (git-bf071e34aa26e096)
+LastWritten 2019-08-22 02:55:55
+TotalBuildTimes 100
+CircuitBuildTimeBin 875 1
+CircuitBuildTimeBin 925 8
+CircuitBuildTimeBin 975 14
+CircuitBuildTimeBin 1025 9
+CircuitBuildTimeBin 1075 5
+CircuitBuildTimeBin 1125 2
+CircuitBuildTimeBin 1175 3
+CircuitBuildTimeBin 1225 4
+CircuitBuildTimeBin 1275 5
+CircuitBuildTimeBin 1325 1
+CircuitBuildTimeBin 1375 4
+CircuitBuildTimeBin 1425 5
+CircuitBuildTimeBin 1475 2
+CircuitBuildTimeBin 1525 1
+CircuitBuildTimeBin 1575 6
+CircuitBuildTimeBin 1625 3
+CircuitBuildTimeBin 1675 4
+CircuitBuildTimeBin 1725 5
+CircuitBuildTimeBin 1775 3
+CircuitBuildTimeBin 1825 3
+CircuitBuildTimeBin 1875 1
+CircuitBuildTimeBin 1925 1
+CircuitBuildTimeBin 2025 1
+CircuitBuildTimeBin 2125 2
+CircuitBuildTimeBin 2175 1
+CircuitBuildTimeBin 2225 1
+CircuitBuildTimeBin 2275 1
+CircuitBuildTimeBin 2525 2
+CircuitBuildTimeBin 2575 1
+CircuitBuildTimeBin 2825 1
+Dormant 0

@@ -1,0 +1,2102 @@
+<html lang="en">
+<head>
+<title>The Polipo Manual</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The Polipo Manual">
+<meta name="generator" content="makeinfo 4.11">
+<link title="Top" rel="top" href="#Top">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+Copyright (C) 2003 - 2006 by Juliusz Chroboczek.-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<h1 class="settitle">The Polipo Manual</h1>
+   <div class="contents">
+<h2>Table of Contents</h2>
+<ul>
+<li><a name="toc_Top" href="#Top">Polipo</a>
+<li><a name="toc_Background" href="#Background">1 Background</a>
+<ul>
+<li><a href="#The-web">1.1 The web and HTTP</a>
+<li><a href="#Proxies-and-caches">1.2 Proxies and caches</a>
+<li><a href="#Latency-and-throughput">1.3 Latency and throughput</a>
+<li><a href="#Network-traffic">1.4 Network traffic</a>
+<ul>
+<li><a href="#Persistent-connections">1.4.1 Persistent connections</a>
+<li><a href="#Pipelining">1.4.2 Pipelining</a>
+<li><a href="#Poor-Mans-Multiplexing">1.4.3 Poor Man's Multiplexing</a>
+</li></ul>
+<li><a href="#Partial-instances">1.5 Caching partial instances</a>
+<li><a href="#POST-and-PUT">1.6 Other requests</a>
+<li><a href="#Other-HTTP-proxies">1.7 Other HTTP proxies</a>
+<ul>
+<li><a href="#Harvest-and-Squid">1.7.1 Harvest and Squid</a>
+<li><a href="#Apache">1.7.2 The Apache proxy</a>
+<li><a href="#WWWOFFLE">1.7.3 WWWOFFLE</a>
+<li><a href="#Junkbuster">1.7.4 Junkbuster</a>
+<li><a href="#Privoxy">1.7.5 Privoxy</a>
+<li><a href="#Oops">1.7.6 Oops</a>
+</li></ul>
+</li></ul>
+<li><a name="toc_Running" href="#Running">2 Running Polipo</a>
+<ul>
+<li><a href="#Polipo-Invocation">2.1 Starting Polipo</a>
+<ul>
+<li><a href="#Configuring-Polipo">2.1.1 Configuration</a>
+<li><a href="#Daemon">2.1.2 Running as a daemon</a>
+<li><a href="#Logging">2.1.3 Logging</a>
+</li></ul>
+<li><a href="#Browser-configuration">2.2 Configuring your browser</a>
+<li><a href="#Stopping">2.3 Stopping Polipo and getting it to reload</a>
+<li><a href="#Local-server">2.4 The local web server</a>
+<ul>
+<li><a href="#Web-interface">2.4.1 The web interface</a>
+</li></ul>
+</li></ul>
+<li><a name="toc_Network" href="#Network">3 Polipo and the network</a>
+<ul>
+<li><a href="#Client-connections">3.1 Client connections</a>
+<ul>
+<li><a href="#Access-control">3.1.1 Access control</a>
+</li></ul>
+<li><a href="#Contacting-servers">3.2 Contacting servers</a>
+<ul>
+<li><a href="#Allowed-ports">3.2.1 Allowed ports</a>
+</li></ul>
+<li><a href="#HTTP-tuning">3.3 Tuning at the HTTP level</a>
+<ul>
+<li><a href="#Tuning-the-HTTP-parser">3.3.1 Tuning the HTTP parser</a>
+<li><a href="#Censoring-headers">3.3.2 Censoring headers</a>
+<ul>
+<li><a href="#Censor-Accept_002dLanguage">3.3.2.1 Why censor Accept-Language</a>
+</li></ul>
+</li></ul>
+<li><a href="#Offline-browsing">3.4 Offline browsing</a>
+<li><a href="#Server-statistics">3.5 Server statistics</a>
+<li><a href="#Server_002dside-behaviour">3.6 Tweaking server-side behaviour</a>
+<li><a href="#PMM">3.7 Poor Man's Multiplexing</a>
+<li><a href="#Forbidden">3.8 Forbidden and redirected URLs</a>
+<ul>
+<li><a href="#Internal-forbidden-list">3.8.1 Internal forbidden list</a>
+<li><a href="#External-redirectors">3.8.2 External redirectors</a>
+</li></ul>
+<li><a href="#DNS">3.9 The domain name service</a>
+<li><a href="#Parent-proxies">3.10 Parent proxies</a>
+<ul>
+<li><a href="#HTTP-parent-proxies">3.10.1 HTTP parent proxies</a>
+<li><a href="#SOCKS-parent-proxies">3.10.2 SOCKS parent proxies</a>
+</li></ul>
+<li><a href="#Tuning-POST-and-PUT">3.11 Tuning POST and PUT requests</a>
+<li><a href="#Tunnelling-connections">3.12 Tunnelling connections</a>
+</li></ul>
+<li><a name="toc_Caching" href="#Caching">4 Caching</a>
+<ul>
+<li><a href="#Cache-transparency">4.1 Cache transparency and validation</a>
+<ul>
+<li><a href="#Tuning-validation">4.1.1 Tuning validation behaviour</a>
+<li><a href="#Tweaking-validation">4.1.2 Further tweaking of validation behaviour</a>
+</li></ul>
+<li><a href="#Memory-cache">4.2 The in-memory cache</a>
+<li><a href="#Disk-cache">4.3 The on-disk cache</a>
+<ul>
+<li><a href="#Asynchronous-writing">4.3.1 Asynchronous writing</a>
+<li><a href="#Purging">4.3.2 Purging the on-disk cache</a>
+<li><a href="#Disk-format">4.3.3 Format of the on-disk cache</a>
+<li><a href="#Modifying-the-on_002ddisk-cache">4.3.4 Modifying the on-disk cache</a>
+</li></ul>
+</li></ul>
+<li><a name="toc_Memory-usage" href="#Memory-usage">5 Memory usage</a>
+<ul>
+<li><a href="#Chunk-memory">5.1 Chunk memory</a>
+<li><a href="#Malloc-memory">5.2 Malloc allocation</a>
+<li><a href="#Limiting-memory-usage">5.3 Limiting Polipo's memory usage</a>
+<ul>
+<li><a href="#Limiting-chunk-usage">5.3.1 Limiting chunk usage</a>
+<li><a href="#Limiting-object-usage">5.3.2 Limiting object usage</a>
+<li><a href="#OS-usage-limits">5.3.3 OS usage limits</a>
+</li></ul>
+</li></ul>
+<li><a name="toc_Copying" href="#Copying">Copying</a>
+<li><a name="toc_Variable-index" href="#Variable-index">Variable index</a>
+<li><a name="toc_Concept-index" href="#Concept-index">Concept index</a>
+</li></ul>
+</div>
+
+
+
+<p><a name="Top"></a>
+
+<h2 class="unnumbered">Polipo</h2>
+
+<p>Polipo is a caching web proxy designed to be used as a personal
+cache or a cache shared among a few users.
+
+   <p>The latest version of Polipo can be found on
+<a href="http://www.pps.jussieu.fr/~jch/software/polipo/">the Polipo web page</a>.
+
+   <p>This manual was written by
+<a href="http://www.pps.jussieu.fr/~jch/">Juliusz Chroboczek</a>.
+
+<p><a name="Background"></a>
+
+<h2 class="chapter">1 Background</h2>
+
+<p><a name="The-web"></a>
+
+<h3 class="section">1.1 The web and HTTP</h3>
+
+<p><a name="index-URL-1"></a><a name="index-resource-2"></a><a name="index-instance-3"></a><a name="index-entity-4"></a><a name="index-HTTP-5"></a>
+The web is a wide-scale decentralised distributed hypertext system,
+something that's obviously impossible to achieve reliably.
+
+   <p>The web is a collection of <dfn>resources</dfn> which are identified by
+<dfn>URLs</dfn>, strings starting with <code>http://</code>.  At any point in
+time, a resource has a certain value, which is called an
+<dfn>instance</dfn> of the resource.
+
+   <p>The fundamental protocol of the web is HTTP, a simple request/response
+protocol.  With HTTP, a client can make a request for a resource to a
+server, and the server replies with an <dfn>entity</dfn>, which is an
+on-the-wire representation of an instance or of a fragment thereof.
+
+<p><a name="Proxies-and-caches"></a>
+
+<h3 class="section">1.2 Proxies and caches</h3>
+
+<p><a name="index-proxy-6"></a><a name="index-caching-7"></a>
+A proxy is a program that acts as both a client and a server.  It
+listens for client requests and forwards them to servers, and forwards
+the servers' replies to clients.
+
+   <p>An HTTP proxy can optimise web traffic away by <dfn>caching</dfn> server
+replies, storing them in memory in case they are needed again.  If a
+reply has been cached, a later client request may, under some
+conditions, be satisfied without going to the source again.
+
+   <p>In addition to taking the shortcuts made possible by caching, proxies
+can improve performance by generating better network traffic than the
+client applications would do.
+
+   <p>Proxies are also useful in ways unrelated to raw performance.  A proxy
+can be used to contact a server that are not visible to the browser,
+for example because there is a firewall in the way (see <a href="#Parent-proxies">Parent proxies</a>), or because the client and the server use different lower
+layer protocols (for example IPv4 and IPv6).  Another common
+application of proxies is to modify the data sent to servers and
+returned to clients, for example by censoring headers that expose too
+much about the client's identity (see <a href="#Censoring-headers">Censoring headers</a>) or
+removing advertisements from the data returned by the server
+(see <a href="#Forbidden">Forbidden</a>).
+
+   <p>Polipo is a caching HTTP proxy that was originally designed as
+a <dfn>personal</dfn> proxy, i.e. a proxy that is used by a single user
+or a small group of users.
+
+<p><a name="Latency-and-throughput"></a>
+
+<h3 class="section">1.3 Latency and throughput</h3>
+
+<p><a name="index-throughput-8"></a><a name="index-latency-9"></a>
+Most network benchmarks consider <dfn>throughput</dfn>, or the average
+amount of data being pushed around per unit of time.  While important
+for batch applications (for example benchmarks), average throughput is
+mostly irrelevant when it comes to interactive web usage.  What is more
+important is a transaction's median <dfn>latency</dfn>, or whether the data
+starts to trickle down before the user gets annoyed.
+
+   <p>Typical web caches optimise for throughput &mdash; for example, by
+consulting sibling caches before accessing a remote resource.  By
+doing so, they significantly add to the median latency, and therefore
+to the average user frustration.
+
+   <p>Polipo was designed to minimise latency.
+
+<p><a name="Network-traffic"></a>
+
+<h3 class="section">1.4 Network traffic</h3>
+
+<p>The web was developed by people who were interested in text processing
+rather than in networking and, unsurprisingly enough, the first
+versions of the HTTP protocol did not make very good use of network
+resources.  The main problem in HTTP/0.9 and early versions of
+HTTP/1.0 was that a separate TCP connection (&ldquo;virtual circuit&rdquo; for
+them telecom people) was created for every entity transferred.
+
+   <p>Opening multiple TCP connections has significant performance
+implications.  Obviously, connection setup and teardown require
+additional packet exchanges which increase network usage and, more
+importantly, latency.
+
+   <p>Less obviously, TCP is not optimised for that sort of usage.  TCP aims
+to avoid network <dfn>congestion</dfn>, a situation in which the network
+becomes unusable due to overly aggressive traffic patterns.  A correct
+TCP implementation will very carefully probe the network at the
+beginning of every connection, which means that a TCP connection is
+very slow during the first couple of kilobytes transferred, and only
+gets up to speed later.  Because most HTTP entities are small (in the
+1 to 10 kilobytes range), HTTP/0.9 uses TCP where it is most inefficient.
+
+<p><a name="Persistent-connections"></a>
+
+<h4 class="subsection">1.4.1 Persistent connections</h4>
+
+<p><a name="index-persistent-connection-10"></a><a name="index-keep_002dalive-connection-11"></a>
+Later HTTP versions allow the transfer of multiple entities on a
+single connection.  A connection that carries multiple entities is
+said to be <dfn>persistent</dfn> (or sometimes <dfn>keep-alive</dfn>). 
+Unfortunately, persistent connections are an optional feature of HTTP,
+even in version 1.1.
+
+   <p>Polipo will attempt to use persistent connections on the server side,
+and will honour persistent connection requests from clients.
+
+<p><a name="Pipelining"></a>
+
+<h4 class="subsection">1.4.2 Pipelining</h4>
+
+<p><a name="index-Pipelining-12"></a>
+With persistent connections it becomes possible to <dfn>pipeline</dfn> or
+<dfn>stream</dfn> requests, i.e. to send multiple requests on a single
+connection without waiting for the replies to come back.  Because this
+technique gets the requests to the server faster, it reduces latency. 
+Additionally, because multiple requests can often be sent in a single
+packet, pipelining reduces network traffic.
+
+   <p>Pipelining is a fairly common technique<a rel="footnote" href="#fn-1" name="fnd-1"><sup>1</sup></a>, but it is not supported by
+HTTP/1.0.  HTTP/1.1 makes pipelining support compulsory in every
+server implementation that can use persistent connections, but there
+are a number of buggy servers that claim to implement HTTP/1.1 but
+don't support pipelining.
+
+   <p>Polipo carefully probes for pipelining support in a server and uses
+pipelining if it believes that it is reliable.  Polipo also deeply
+enjoys being pipelined at by a client<a rel="footnote" href="#fn-2" name="fnd-2"><sup>2</sup></a>.
+
+<p><a name="Poor-Mans-Multiplexing"></a>
+
+<h4 class="subsection">1.4.3 Poor Man's Multiplexing</h4>
+
+<p><a name="index-Poor-Man_0027s-Multiplexing-13"></a><a name="index-multiplexing-14"></a>
+A major weakness of the HTTP protocol is its inability to share a
+single connection between multiple simultaneous transactions &mdash; to
+<dfn>multiplex</dfn> a number of transactions over a single connection.  In
+HTTP, a client can either request all instances sequentially, which
+significantly increases latency, or else open multiple concurrent
+connections, with all the problems that this implies
+(see <a href="#Persistent-connections">Persistent connections</a>).
+
+   <p>Poor Man's Multiplexing (PMM) is a technique that simulates
+multiplexing by requesting an instance in multiple segments; because
+the segments are fetched in independent transactions, they can be
+interleaved with requests for other resources.
+
+   <p>Obviously, PMM only makes sense in the presence of persistent
+connections; additionally, it is only effective in the presence of
+pipelining (see <a href="#Pipelining">Pipelining</a>).
+
+   <p>PMM poses a number of reliability issues.  If the resource being
+fetched is dynamic, it is quite possible that it will change between
+segments; thus, an implementation making use of PMM needs to be able
+to switch to full-resource retrieval when it detects a dynamic
+resource.
+
+   <p>Polipo supports PMM, but it is disabled it by default (see <a href="#PMM">PMM</a>).
+
+<p><a name="Partial-instances"></a>
+
+<h3 class="section">1.5 Caching partial instances</h3>
+
+<p><a name="index-partial-instance-15"></a><a name="index-range-request-16"></a>
+A partial instance is an instance that is being cached but only part
+of which is available in the local cache.  There are three ways in
+which partial instances can arise: client applications requesting only
+part of an instance (Adobe's Acrobat Reader plugin is famous for
+that), a server dropping a connection mid-transfer (because it is
+short on resources, or, surprisingly often, because it is buggy), a
+client dropping a connection (usually because the user pressed
+<em>stop</em>).
+
+   <p>When an instance is requested that is only partially cached, it is
+possible to request just the missing data by using a feature of HTTP
+known as a <dfn>range</dfn> request.  While support for range requests is
+optional, most servers honour them in case of static data (data that
+are stored on disk, rather then being generated on the fly e.g. by a
+CGI script).
+
+   <p>Caching partial instances has a number of positive effects.  Obviously,
+it reduces the amount of data transmitted as the available data
+needn't be fetched again.  Because it prevents partial data from being
+discarded, it makes it reasonable for a proxy to unconditionally abort
+a download when requested by the user, and therefore reduces network
+traffic.
+
+   <p>Polipo caches arbitrary partial instances in its in-memory cache.  It
+will only store the initial segment of a partial instance (from its
+beginning up to its first hole) in its on-disk cache, though.  In
+either case, it will attempt to use range requests to fetch the
+missing data.
+
+<p><a name="POST-and-PUT"></a>
+
+<h3 class="section">1.6 Other requests</h3>
+
+<p><a name="index-GET-request-17"></a><a name="index-HEAD-request-18"></a><a name="index-PUT-request-19"></a><a name="index-POST-request-20"></a><a name="index-OPTIONS-request-21"></a><a name="index-PROPFIND-request-22"></a>
+The previous sections pretend that there is only one kind of request
+in HTTP &mdash; the &lsquo;<samp><span class="samp">GET</span></samp>&rsquo; request.  In fact, there are some others.
+
+   <p>The &lsquo;<samp><span class="samp">HEAD</span></samp>&rsquo; request method retrieves data about an resource.  Polipo
+does not normally use &lsquo;<samp><span class="samp">HEAD</span></samp>&rsquo;, but will fall back to using it for
+validation it if finds that a given server fails to cooperate with its
+standard validation methods (see <a href="#Cache-transparency">Cache transparency</a>).  Polipo will
+correctly reply to a client's &lsquo;<samp><span class="samp">HEAD</span></samp>&rsquo; request.
+
+   <p>The &lsquo;<samp><span class="samp">POST</span></samp>&rsquo; method is used to request that the server should do
+something rather than merely sending an entity; it is usually used
+with HTML forms that have an effect<a rel="footnote" href="#fn-3" name="fnd-3"><sup>3</sup></a>.  The &lsquo;<samp><span class="samp">PUT</span></samp>&rsquo; method is used to replace an
+resource with a different instance; it is typically used by web
+publishing applications.
+
+   <p>&lsquo;<samp><span class="samp">POST</span></samp>&rsquo; and &lsquo;<samp><span class="samp">PUT</span></samp>&rsquo; requests are handled by Polipo pretty much
+like &lsquo;<samp><span class="samp">GET</span></samp>&rsquo; and &lsquo;<samp><span class="samp">HEAD</span></samp>&rsquo;; however, for various reasons, some
+precautions must be taken.  In particular, any cached data for the
+resource they refer to must be discarded, and they can never be
+pipelined.
+
+   <p>Finally, HTTP/1.1 includes a convenient backdoor with the
+&lsquo;<samp><span class="samp">CONNECT</span></samp>&rsquo; method.  For more information, please see
+<a href="#Tunnelling-connections">Tunnelling connections</a>.
+
+   <p>Polipo does not currently handle the more exotic methods such as
+&lsquo;<samp><span class="samp">OPTIONS</span></samp>&rsquo; and &lsquo;<samp><span class="samp">PROPFIND</span></samp>&rsquo;.
+
+<p><a name="Other-HTTP-proxies"></a>
+
+<h3 class="section">1.7 Other HTTP proxies</h3>
+
+<p><a name="index-proxy-23"></a>
+I started writing Polipo because the weather was bad.  But also
+because I wanted to implement some features that other web proxies
+don't have.
+
+<p><a name="Harvest-and-Squid"></a>
+
+<h4 class="subsection">1.7.1 Harvest and Squid</h4>
+
+<p><a name="index-Harvest-24"></a><a name="index-Squid-25"></a>
+Harvest, the grandfather of all web caches, has since evolved into
+<a href="http://www.squid-cache.org/">Squid</a>.
+
+   <p>Squid sports an elegant single-threaded non-blocking architecture and
+multiplexes multiple clients in a single process.  It also features
+almost complete support for HTTP/1.1, although for some reason it
+doesn't currently advertise it.
+
+   <p>Squid is designed as a large-scale shared proxy running on a dedicated
+machine, and therefore carries certain design decisions which make it
+difficult to use as a personal proxy.  Because Squid keeps all
+resource meta-data in memory, it requires a fair amount of RAM in
+order to manipulate a reasonably sized cache.
+
+   <p>Squid doesn't cache partial instances, and has trouble with instances
+larger than available memory<a rel="footnote" href="#fn-4" name="fnd-4"><sup>4</sup></a>.  If a client connection
+is interrupted, Squid has to decide whether to continue fetching the
+resource (and possibly waste bandwidth) or discard what it already has
+(and possibly waste bandwidth).
+
+   <p>Some versions of squid would, under some circumstances, pipeline up to
+two outgoing requests on a single connection.  At the time of writing,
+this feature appears to have been disabled in the latest version.
+
+   <p>Squid's developers have decided to re-write it in C++.
+
+<p><a name="Apache"></a>
+
+<h4 class="subsection">1.7.2 The Apache proxy</h4>
+
+<p><a name="index-Apache-26"></a>
+The <a href="http://www.apache.org/">Apache web server</a> includes a
+complete HTTP/1.1 proxy.
+
+   <p>The Apache web server was designed to maximise ease of programming &mdash;
+a decision which makes Apache immensely popular for deploying
+web-based applications.  Of course, this ease of programming comes at
+a cost, and Apache is not the most lightweight proxy available.
+
+   <p>As cheaper caching proxies are available, Apache is not useful as a
+standalone proxy.  The main application of Apache's proxy is to join
+multiple web servers' trees into a single hierarchy.
+
+   <p>The Apache proxy doesn't cache partial instances and doesn't pipeline
+multiple outgoing requests.
+
+<p><a name="WWWOFFLE"></a>
+
+<h4 class="subsection">1.7.3 WWWOFFLE</h4>
+
+<p><a name="index-WWWOFFLE-27"></a>
+<a href="http://www.gedanken.demon.co.uk/wwwoffle/">WWWOFFLE</a>, an elegant
+personal proxy, is the primary model for Polipo.
+
+   <p>WWWOFFLE has more features than can be described here.  It will censor
+banner ads, clean your HTML, decorate it with random colours, schedule
+fetches for off-peak hours.
+
+   <p>Unfortunately, the HTTP traffic that WWWOFFLE generates is disgusting. 
+It will open a connection for every fetch, and forces the client to do
+the same.
+
+   <p>WWWOFFLE only caches complete instances.
+
+   <p>I used WWWOFFLE for many years, and frustration with WWWOFFLE's
+limitations is the main reason why I started Polipo in the first
+place.
+
+<p><a name="Junkbuster"></a>
+
+<h4 class="subsection">1.7.4 Junkbuster</h4>
+
+<p><a name="index-Junkbuster-28"></a>
+<a href="http://internet.junkbuster.com/">Junkbuster</a> is a simple
+non-caching web proxy designed to remove banner ads and cookies.  It
+was the main model for WWWOFFLE's (and therefore Polipo's) header and
+ad-removing features.
+
+   <p>Junkbuster's HTTP support is very simple (some would say broken): it
+doesn't do persistent connections, and it breaks horribly if the
+client tries pipelining.  Junkbuster is no longer being maintained,
+and has evolved into Privoxy.
+
+<p><a name="Privoxy"></a>
+
+<h4 class="subsection">1.7.5 Privoxy</h4>
+
+<p><a name="index-Privoxy-29"></a>
+<a href="http://www.privoxy.org/">Privoxy</a> is the current incarnation of
+Junkbuster.  Privoxy has the ability to randomly modify web pages
+before sending them to the browser &mdash; for example, remove
+&lsquo;<samp><span class="samp">&lt;blink&gt;</span></samp>&rsquo; or &lsquo;<samp><span class="samp">&lt;img&gt;</span></samp>&rsquo; tags.
+
+   <p>Just like its parent, Privoxy cannot do persistent connections.  Under
+some circumstances, it will also buffer whole pages before sending
+them to the client, which significantly adds to its latency.  However,
+this is difficult to avoid given the kinds of rewriting it attempts to
+perform.
+
+<p><a name="Oops"></a>
+
+<h4 class="subsection">1.7.6 Oops</h4>
+
+<p><a name="index-Oops-30"></a>
+<a href="http://zipper.paco.net/~igor/oops.eng/">Oops</a> is a caching web
+proxy that uses one thread (lightweight process) for every connection. 
+This technique does cost additional memory, but allows good
+concurrency of requests while avoiding the need for complex
+non-blocking programming.  Oops was apparently designed as a
+wide-scale shared proxy.
+
+   <p>Although Oops' programming model makes it easy to implement persistent
+connections, Oops insists on opening a separate connection to the
+server for every single resource fetch, which disqualifies it from
+production usage.
+
+<p><a name="Running"></a>
+
+<h2 class="chapter">2 Running Polipo</h2>
+
+<p><a name="Polipo-Invocation"></a>
+
+<h3 class="section">2.1 Starting Polipo</h3>
+
+<p><a name="index-invocation-31"></a>
+By default, Polipo runs as a normal foreground job in a terminal in
+which it can log random &ldquo;How do you do?&rdquo; messages.  With the right
+configuration options, Polipo can run as a daemon.
+
+   <p>Polipo is run with the following command line:
+<pre class="example">     $ polipo [ -h ] [ -v ] [ -x ] [ -c <var>config</var> ] [ <var>var</var>=<var>val</var>... ]
+</pre>
+   <p>All flags are optional.  The flag <samp><span class="option">-h</span></samp> causes Polipo to print a
+short help message and to quit.  The flag <samp><span class="option">-v</span></samp> causes Polipo to
+list all of its configuration variables and quit.  The flag
+<samp><span class="option">-x</span></samp> causes Polipo to purge its on-disk cache and then quit
+(see <a href="#Purging">Purging</a>).  The flag <samp><span class="option">-c</span></samp> specifies the configuration
+file to use (by default <samp><span class="file">~/.polipo</span></samp> or
+<samp><span class="file">/etc/polipo/config</span></samp>).  Finally, Polipo's configuration can be
+changed on the command line by assigning values to given configuration
+variables.
+
+<p><a name="Configuring-Polipo"></a>
+
+<h4 class="subsection">2.1.1 Configuration</h4>
+
+<p><a name="index-runtime-configuration-32"></a><a name="index-variable-33"></a><a name="index-configuration-variable-34"></a><a name="index-configuration-file-35"></a>
+There is a number of variables that you can tweak in order to
+configure Polipo, and they should all be described in this manual
+(see <a href="#Variable-index">Variable index</a>).  You can display the complete, most
+up-to-date list of configuration variables by using the <samp><span class="option">-v</span></samp>
+command line flag or by accessing the &ldquo;current configuration&rdquo; page
+of Polipo's web interface (see <a href="#Web-interface">Web interface</a>).  Configuration
+variables can be set either on the command line or else in the
+configuration file given by the <samp><span class="option">-c</span></samp> command-line flag.
+
+   <p>Configuration variables are typed, and <samp><span class="option">-v</span></samp> will display their
+types.  The type can be of one of the following:
+     <ul>
+<li>&lsquo;<samp><span class="samp">integer</span></samp>&rsquo; or &lsquo;<samp><span class="samp">float</span></samp>&rsquo;: a numeric value;
+
+     <li>&lsquo;<samp><span class="samp">boolean</span></samp>&rsquo;: a truth value, one of &lsquo;<samp><span class="samp">true</span></samp>&rsquo; or &lsquo;<samp><span class="samp">false</span></samp>&rsquo;;
+
+     <li>&lsquo;<samp><span class="samp">tristate</span></samp>&rsquo;: one of &lsquo;<samp><span class="samp">false</span></samp>&rsquo;, &lsquo;<samp><span class="samp">maybe</span></samp>&rsquo; or &lsquo;<samp><span class="samp">true</span></samp>&rsquo;;
+
+     <li>&lsquo;<samp><span class="samp">4-state</span></samp>&rsquo;, one of &lsquo;<samp><span class="samp">false</span></samp>&rsquo;, &lsquo;<samp><span class="samp">reluctantly</span></samp>&rsquo;,
+&lsquo;<samp><span class="samp">happily</span></samp>&rsquo; or &lsquo;<samp><span class="samp">true</span></samp>&rsquo;;
+
+     <li>&lsquo;<samp><span class="samp">5-state</span></samp>&rsquo;, one of &lsquo;<samp><span class="samp">false</span></samp>&rsquo;, &lsquo;<samp><span class="samp">reluctantly</span></samp>&rsquo;, &lsquo;<samp><span class="samp">maybe</span></samp>&rsquo;,
+&lsquo;<samp><span class="samp">happily</span></samp>&rsquo; or &lsquo;<samp><span class="samp">true</span></samp>&rsquo;;
+
+     <li>&lsquo;<samp><span class="samp">atom</span></samp>&rsquo;, a string written within double quotes &lsquo;<samp><span class="samp">"</span></samp>&rsquo;);
+
+     <li>&lsquo;<samp><span class="samp">list</span></samp>&rsquo;, a comma-separated list of strings;
+
+     <li>&lsquo;<samp><span class="samp">intlist</span></samp>&rsquo;, a comma-separated list of integers and ranges of
+integers (of the form `<var>n</var>&ndash;<var>m</var>'). 
+</ul>
+
+   <p>The configuration file has a very simple syntax.  All blank lines are
+ignored, as are lines starting with a hash sign &lsquo;<samp><span class="samp">#</span></samp>&rsquo;.  Other lines
+must be of the form
+<pre class="example">     <var>var</var> = <var>val</var>
+</pre>
+   <p>where <var>var</var> is a variable to set and <var>val</var> is the value to set
+it to.
+
+   <p>It is possible to change the configuration of a running polipo by
+using the local configuration interface (see <a href="#Web-interface">Web interface</a>).
+
+<p><a name="Daemon"></a>
+
+<h4 class="subsection">2.1.2 Running as a daemon</h4>
+
+<p><a name="index-daemon-36"></a><a name="index-terminal-37"></a><a name="index-pid-38"></a><a name="index-daemonise-39"></a><a name="index-pidFile-40"></a>
+If the configuration variable <code>daemonise</code> is set to true, Polipo
+will run as a daemon: it will fork and detach from its controlling
+terminal (if any).  The variable <code>daemonise</code> defaults to false.
+
+   <p>When Polipo is run as a daemon, it can be useful to get it to
+atomically write its <em>pid</em> to a file.  If the variable
+<code>pidFile</code> is defined, it should be the name of a file where
+Polipo will write its <em>pid</em>.  If the file already exists when it
+is started, Polipo will refuse to run.
+
+<p><a name="Logging"></a>
+
+<h4 class="subsection">2.1.3 Logging</h4>
+
+<p><a name="index-logging-41"></a><a name="index-logLevel-42"></a><a name="index-logFile-43"></a><a name="index-logSyslog-44"></a><a name="index-logFacility-45"></a>
+When it encounters a difficulty, Polipo will print a friendly message. 
+The location where these messages go is controlled by the
+configuration variables <code>logFile</code> and <code>logSyslog</code>. 
+If <code>logSyslog</code> is <code>true</code>, error messages go to the system log
+facility given by <code>logFacility</code>.  If <code>logFile</code> is set, it is
+the name of a file where all output will accumulate.  If <code>logSyslog</code>
+is <code>false</code> and <code>logFile</code> is empty, messages go to the error
+output of the process (normally the terminal).
+
+   <p>The variable <code>logFile</code> defaults to empty if <code>daemonise</code> is
+false, and to &lsquo;<samp><span class="samp">/var/log/polipo</span></samp>&rsquo; otherwise.
+
+   <p>The variable <code>logSyslog</code> defaults to <code>false</code>, and
+<code>logFacility</code> defaults to &lsquo;<samp><span class="samp">user</span></samp>&rsquo;.
+
+   <p>The amount of logging is controlled by the variable <code>logLevel</code>. 
+Please see the file &lsquo;<samp><span class="samp">log.h</span></samp>&rsquo; in the Polipo sources for the
+possible values of <code>logLevel</code>.
+
+   <p>(Note that if you are using a shared cache, or logging to syslog,
+an overly low <code>logLevel</code> could be a privacy violation.)
+
+<p><a name="Browser-configuration"></a>
+
+<h3 class="section">2.2 Configuring your browser</h3>
+
+<p><a name="index-browser-configuration-46"></a><a name="index-user_002dagent-configuration-47"></a>
+Telling your user-agent (web browser) to use Polipo is an operation
+that depends on the browser.  Many user-agents will transparently use
+Polipo if the environment variable &lsquo;<samp><span class="samp">http_proxy</span></samp>&rsquo; points at it;
+e.g.
+<pre class="example">     $ export http_proxy=http://localhost:8123/
+</pre>
+   <p>Netscape Navigator, Mozilla, Mozilla Firefox, KDE's Konqueror and
+probably other browsers require that you configure them manually
+through their <em>Preferences</em> or <em>Configure</em> menu.
+
+   <p>If your user-agent sports such options, tell it to use persistent
+connections when speaking to proxies, to speak HTTP/1.1 and to use
+HTTP/1.1 pipelining.
+
+<p><a name="Stopping"></a>
+
+<h3 class="section">2.3 Stopping Polipo and getting it to reload</h3>
+
+<p><a name="index-signals-48"></a><a name="index-shutting-down-49"></a><a name="index-stopping-50"></a>
+Polipo will shut down cleanly if it receives <code>SIGHUP</code>,
+<code>SIGTERM</code> or <code>SIGINT</code> signals; this will normally happen
+when a Polipo in the foreground receives a <code>^C</code> key press, when
+your system shuts down, or when you use the <code>kill</code> command with
+no flags.  Polipo will then write-out all its in-memory data to disk
+and quit.
+
+   <p>If Polipo receives the <code>SIGUSR1</code> signal, it will write out all
+the in-memory data to disk (but won't discard them), reopen the log
+file, and then reload the forbidden URLs file (see <a href="#Forbidden">Forbidden</a>).
+
+   <p>Finally, if Polipo receives the <code>SIGUSR2</code> signal, it will write
+out all the in-memory data to disk and discard as much of the memory
+cache as possible.  It will then reopen the log file and reload the
+forbidden URLs file.
+
+<p><a name="Local-server"></a>
+
+<h3 class="section">2.4 The local web server</h3>
+
+<p><a name="index-localDocumentRoot-51"></a><a name="index-disableProxy-52"></a><a name="index-web-server-53"></a><a name="index-local-server-54"></a>
+Polipo includes a local web server, which is accessible on the same
+port as the one the proxy listens to.  Therefore, by default you can
+access Polipo's local web server as &lsquo;<samp><span class="samp">http://localhost:8123/</span></samp>&rsquo;.
+
+   <p>The data for the local web server can be configured by setting
+<code>localDocumentRoot</code>, which defaults to
+<samp><span class="file">/usr/share/polipo/www/</span></samp>.  Setting this variable to &lsquo;<samp><span class="samp">""</span></samp>&rsquo;
+will disable the local server.
+
+   <p>Polipo assumes that the local web tree doesn't change behind its back. 
+If you change any of the local files, you will need to notify Polipo
+by sending it a <code>SIGUSR2</code> signal (see <a href="#Stopping">Stopping</a>).
+
+   <p>If you use polipo as a publicly accessible web server, you might want
+to set the variable <code>disableProxy</code>, which will prevent it from
+acting as a web proxy.  (You will also want to set
+<code>disableLocalInterface</code> (see <a href="#Web-interface">Web interface</a>), and perhaps run
+Polipo in a <em>chroot</em> jail.)
+
+<p><a name="Web-interface"></a>
+
+<h4 class="subsection">2.4.1 The web interface</h4>
+
+<p><a name="index-runtime-configuration-55"></a><a name="index-web-interface-56"></a><a name="index-disableLocalInterface-57"></a><a name="index-disableConfiguration-58"></a><a name="index-disableServersList-59"></a>
+The subtree of the local web space rooted at
+&lsquo;<samp><span class="samp">http://localhost:8123/polipo/</span></samp>&rsquo; is treated specially: URLs under
+this root do not correspond to on-disk files, but are generated by
+Polipo on-the-fly.  We call this subtree Polipo's <dfn>local web
+interface</dfn>.
+
+   <p>The page &lsquo;<samp><span class="samp">http://localhost:8123/polipo/config?</span></samp>&rsquo; contains the
+values of all configuration variables, and allows setting most of them.
+
+   <p>The page &lsquo;<samp><span class="samp">http://localhost:8123/polipo/status?</span></samp>&rsquo; provides a summary
+status report about the running Polipo, and allows performing a number
+of actions on the proxy, notably flushing the in-memory cache.
+
+   <p>The page &lsquo;<samp><span class="samp">http://localhost:8123/polipo/servers?</span></samp>&rsquo; contains the list
+of known servers, and the statistics maintained about them
+(see <a href="#Server-statistics">Server statistics</a>).
+
+   <p>The pages starting with &lsquo;<samp><span class="samp">http://localhost:8123/polipo/index?</span></samp>&rsquo;
+contain indices of the disk cache.  For example, the following page
+contains the index of the cached pages from the server of some random
+company:
+<pre class="example">     http://localhost:8123/polipo/index?http://www.microsoft.com/
+</pre>
+   <p>The pages starting with
+&lsquo;<samp><span class="samp">http://localhost:8123/polipo/recursive-index?</span></samp>&rsquo; contain recursive
+indices of various servers.  This functionality is disabled by
+default, and can be enabled by setting the variable
+<code>disableIndexing</code>.
+
+   <p>If you have multiple users, you will probably want to disable the
+local interface by setting the variable <code>disableLocalInterface</code>. 
+You may also selectively control setting of variables, indexing and
+listing known servers by setting the variables
+<code>disableConfiguration</code>, <code>disableIndexing</code> and
+<code>disableServersList</code>.
+
+<p><a name="Network"></a>
+
+<h2 class="chapter">3 Polipo and the network</h2>
+
+<p><a name="Client-connections"></a>
+
+<h3 class="section">3.1 Client connections</h3>
+
+<p><a name="index-proxyAddress-60"></a><a name="index-proxyPort-61"></a><a name="index-proxyName-62"></a><a name="index-address-63"></a><a name="index-port-64"></a><a name="index-IPv6-65"></a><a name="index-proxy-loop-66"></a><a name="index-loop-67"></a><a name="index-proxy-name-68"></a><a name="index-via-69"></a><a name="index-loopback-address-70"></a><a name="index-security-71"></a>
+There are three fundamental values that control how Polipo speaks to
+clients.  The variable <code>proxyAddress</code>, defines the IP address on
+which Polipo will listen; by default, its value is the <dfn>loopback
+address</dfn> <code>"127.0.0.1"</code>, meaning that Polipo will listen on the
+IPv4 loopback interface (the local host) only.  By setting this
+variable to a global IP address or to one of the special values
+<code>"::"</code> or <code>"0.0.0.0"</code>, it is possible to allow Polipo to
+serve remote clients.  This is likely to be a security hole unless you
+set <code>allowedClients</code> to a reasonable value (see <a href="#Access-control">Access control</a>).
+
+   <p>Note that the type of address that you specify for <code>proxyAddress</code>
+will determine whether Polipo listens to IPv4 or IPv6.  Currently, the
+only way to have Polipo listen to both protocols is to specify the
+IPv6 unspecified address (<code>"::"</code>) for <code>proxyAddress</code>.
+
+   <p>The variable <code>proxyPort</code>, by default 8123, defines the TCP port
+on which Polipo will listen.
+
+   <p>The variable <code>proxyName</code>, which defaults to the host name of the
+machine on which Polipo is running, defines the <dfn>name</dfn> of the
+proxy.  This can be an arbitrary string that should be unique among
+all instances of Polipo that you are running.  Polipo uses it in error
+messages and optionally for detecting proxy loops (by using the
+&lsquo;<samp><span class="samp">Via</span></samp>&rsquo; HTTP header, see <a href="#Censoring-headers">Censoring headers</a>).
+
+<p><a name="Access-control"></a>
+
+<h4 class="subsection">3.1.1 Access control</h4>
+
+<p><a name="index-proxyAddress-72"></a><a name="index-authCredentials-73"></a><a name="index-authRealm-74"></a><a name="index-allowedClients-75"></a><a name="index-access-control-76"></a><a name="index-authentication-77"></a><a name="index-loopback-address-78"></a><a name="index-security-79"></a><a name="index-username-80"></a><a name="index-password-81"></a>
+By making it possible to have Polipo listen on a non-routable address
+(for example the loopback address &lsquo;<samp><span class="samp">127.0.0.1</span></samp>&rsquo;), the variable
+<code>proxyAddress</code> provides a very crude form of <dfn>access
+control</dfn>: the ability to decide which hosts are allowed to connect.
+
+   <p>A finer form of access control can be implemented by specifying
+explicitly a number of client addresses or ranges of addresses
+(networks) that a client is allowed to connect from.  This is done
+by setting the variable <code>allowedClients</code>.
+
+   <p>Every entry in <code>allowedClients</code> can be an IP address, for example
+&lsquo;<samp><span class="samp">134.157.168.57</span></samp>&rsquo; or &lsquo;<samp><span class="samp">::1</span></samp>&rsquo;.  It can also be a network
+address, i.e. an IP address and the number of bits in the network
+prefix, for example &lsquo;<samp><span class="samp">134.157.168.0/24</span></samp>&rsquo; or
+&lsquo;<samp><span class="samp">2001:660:116::/48</span></samp>&rsquo;.  Typical uses of &lsquo;<samp><span class="samp">allowedClients</span></samp>&rsquo;
+variable include
+<pre class="example">     allowedClients = 127.0.0.1, ::1, 134.157.168.0/24, 2001:660:116::/48
+</pre>
+   <p>or, for an IPv4-only version of Polipo,
+<pre class="example">     allowedClients = 127.0.0.1, 134.157.168.0/24
+</pre>
+   <p>A different form of access control can be implemented by requiring
+each client to <dfn>authenticate</dfn>, i.e. to prove its identity before
+connecting.  Polipo currently only implements the most insecure form
+of authentication, <dfn>HTTP basic authentication</dfn>, which sends
+usernames and passwords in clear over the network.  HTTP basic
+authentication is required when the variable <code>authCredentials</code> is
+not null; its value should be of the form &lsquo;<samp><span class="samp">username:password</span></samp>&rsquo;.
+
+   <p>Note that both IP-based authentication and HTTP basic authentication
+are insecure: the former is vulnerable to IP address spoofing, the
+latter to replay attacks.  If you need to access Polipo over the
+public Internet, the only secure option is to have it listen over the
+loopback interface only and use an ssh tunnel (see <a href="#Parent-proxies">Parent proxies</a>)<a rel="footnote" href="#fn-5" name="fnd-5"><sup>5</sup></a>.
+
+<p><a name="Contacting-servers"></a>
+
+<h3 class="section">3.2 Contacting servers</h3>
+
+<p><a name="index-multiple-addresses-82"></a><a name="index-IPv6-83"></a><a name="index-useTemporarySourceAddress-84"></a>
+A server can have multiple addresses, for example if it is
+<dfn>multihomed</dfn> (connected to multiple networks) or if it can speak
+both IPv4 and IPv6.  Polipo will try all of a hosts addresses in turn;
+once it has found one that works, it will stick to that address until
+it fails again.
+
+   <p>If connecting via IPv6 there is the possibility to use temporary
+source addresses to increase privacy (RFC&nbsp;3041). The variable
+<code>useTemporarySourceAddress</code> controls the use of temporary
+addresses for outgoing connections; if set to <code>true</code>
+temporary addresses are preferred, if set to <code>false</code> static addresses
+are used and if set to <code>maybe</code> (the default) the operation
+system default is in effect. This setting is not available
+on all operation systems.
+
+<p><a name="Allowed-ports"></a>
+
+<h4 class="subsection">3.2.1 Allowed ports</h4>
+
+<p><a name="index-Allowed-ports-85"></a><a name="index-Forbidden-ports-86"></a><a name="index-ports-87"></a><a name="index-allowedPorts-88"></a>
+A TCP service is identified not only by the IP address of the machine
+it is running on, but also by a small integer, the TCP <dfn>port</dfn> it
+is <dfn>listening</dfn> on.  Normally, web servers listen on port 80, but
+it is not uncommon to have them listen on different ports; Polipo's
+internal web server, for example, listens on port 8123 by default.
+
+   <p>The variable <code>allowedPorts</code> contains the list of ports that
+Polipo will accept to connect to on behalf of clients; it defaults to
+&lsquo;<samp><span class="samp">80-100, 1024-65535</span></samp>&rsquo;.  Set this variable to &lsquo;<samp><span class="samp">1-65535</span></samp>&rsquo; if your
+clients (and the web pages they consult!) are fully trusted.  (The
+variable <code>allowedPorts</code> is not considered for tunnelled
+connections; see <a href="#Tunnelling-connections">Tunnelling connections</a>).
+
+<p><a name="HTTP-tuning"></a>
+
+<h3 class="section">3.3 Tuning at the HTTP level</h3>
+
+<p><a name="index-HTTP-89"></a><a name="index-headers-90"></a>
+
+<p><a name="Tuning-the-HTTP-parser"></a>
+
+<h4 class="subsection">3.3.1 Tuning the HTTP parser</h4>
+
+<p><a name="index-laxHttpParser-91"></a><a name="index-bigBufferSize-92"></a>
+As a number of HTTP servers and CGI scripts serve incorrect HTTP
+headers, Polipo uses a <em>lax</em> parser, meaning that incorrect HTTP
+headers will be ignored (a warning will be logged by default).  If the
+variable <code>laxHttpParser</code> is not set (it is set by default),
+Polipo will use a <em>strict</em> parser, and refuse to serve an
+instance unless it could parse all the headers.
+
+   <p>When the amount of headers exceeds one chunk's worth (see <a href="#Chunk-memory">Chunk memory</a>), Polipo will allocate a <dfn>big buffer</dfn> in order to store
+the headers.  The size of big buffers, and therefore the maximum
+amount of headers Polipo can parse, is specified by the variable
+<code>bigBufferSize</code> (32<span class="dmn">kB</span> by default).
+
+<p><a name="Censoring-headers"></a>
+
+<h4 class="subsection">3.3.2 Censoring headers</h4>
+
+<p><a name="index-privacy-93"></a><a name="index-anonymity-94"></a><a name="index-Referer-95"></a><a name="index-cookies-96"></a><a name="index-censorReferer-97"></a><a name="index-censoredHeaders-98"></a><a name="index-proxyName-99"></a><a name="index-disableVia-100"></a>
+Polipo offers the option to censor given HTTP headers in both client
+requests and server replies.  The main application of this feature is
+to very slightly improve the user's privacy by eliminating cookies and
+some content-negotiation headers.
+
+   <p>It is important to understand that these features merely make it
+slightly more difficult to gather statistics about the user's
+behaviour.  While they do not actually prevent such statistics from
+being collected, they might make it less cost-effective to do so.
+
+   <p>The general mechanism is controlled by the variable
+<code>censoredHeaders</code>, the value of which is a case-insensitive list
+of headers to unconditionally censor.  By default, it is empty, but
+I recommend that you set it to &lsquo;<samp><span class="samp">From, Accept-Language</span></samp>&rsquo;.  Adding
+headers such as &lsquo;<samp><span class="samp">Set-Cookie</span></samp>&rsquo;, &lsquo;<samp><span class="samp">Set-Cookie2</span></samp>&rsquo;, &lsquo;<samp><span class="samp">Cookie</span></samp>&rsquo;,
+&lsquo;<samp><span class="samp">Cookie2</span></samp>&rsquo; or &lsquo;<samp><span class="samp">User-Agent</span></samp>&rsquo; to this list will probably break
+many web sites.
+
+   <p>The case of the &lsquo;<samp><span class="samp">Referer</span></samp>&rsquo;<a rel="footnote" href="#fn-6" name="fnd-6"><sup>6</sup></a> header is treated specially because many
+sites will refuse to serve pages when it is not provided.  If
+<code>censorReferer</code> is <code>false</code> (the default), &lsquo;<samp><span class="samp">Referer</span></samp>&rsquo;
+headers are passed unchanged to the server.  If <code>censorReferer</code>
+is <code>maybe</code>, &lsquo;<samp><span class="samp">Referer</span></samp>&rsquo; headers are passed to the server only
+when they refer to the same host as the resource being fetched.  If
+<code>censorReferer</code> is <code>true</code>, all &lsquo;<samp><span class="samp">Referer</span></samp>&rsquo; headers are
+censored.  I recommend setting <code>censorReferer</code> to <code>maybe</code>.
+
+   <p>Another header that can have privacy implications is the &lsquo;<samp><span class="samp">Via</span></samp>&rsquo;
+header, which is used to specify the chain of proxies through which
+a given request has passed.  Polipo will generate &lsquo;<samp><span class="samp">Via</span></samp>&rsquo; headers
+if the variable <code>disableVia</code> is <code>false</code> (it is true by
+default).  If you choose to generate &lsquo;<samp><span class="samp">Via</span></samp>&rsquo; headers, you may want
+to set the <code>proxyName</code> variable to some innocuous string
+(see <a href="#Client-connections">Client connections</a>).
+
+<p><a name="Censor-Accept-Language"></a>
+<a name="Censor-Accept_002dLanguage"></a>
+
+<h5 class="subsubsection">3.3.2.1 Why censor Accept-Language</h5>
+
+<p><a name="index-negotiation-101"></a><a name="index-content-negotiation-102"></a><a name="index-Accept_002dLanguage-103"></a>
+Recent versions of HTTP include a mechanism known as <dfn>content
+negotiation</dfn> which allows a user-agent and a server to negotiate the
+best representation (instance) for a given resource.  For example, a
+server that provides both PNG and GIF versions of an image will serve
+the PNG version to user-agents that support PNG, and the GIF version
+to Internet Explorer.
+
+   <p>Content negotiation requires that a client should send with every
+single request a number of headers specifying the user's cultural and
+technical preferences.  Most of these headers do not expose sensitive
+information (who cares whether your browser supports PNG?).  The
+&lsquo;<samp><span class="samp">Accept-Language</span></samp>&rsquo; header, however, is meant to convey the user's
+linguistic preferences.  In some cases, this information is sufficient
+to pinpoint with great precision the user's origins and even his
+political or religious opinions; think, for example, of the
+implications of sending &lsquo;<samp><span class="samp">Accept-Language: yi</span></samp>&rsquo; or &lsquo;<samp><span class="samp">ar_PS</span></samp>&rsquo;.
+
+   <p>At any rate, &lsquo;<samp><span class="samp">Accept-Language</span></samp>&rsquo; is not useful.  Its design is
+based on the assumption that language is merely another representation
+for the same information, and &lsquo;<samp><span class="samp">Accept-Language</span></samp>&rsquo; simply carries a
+prioritised list of languages, which is not enough to usefully
+describe a literate user's preferences.  A typical French user, for
+example, will prefer an English-language original to a French
+(mis-)translation, while still wanting to see French language texts
+when they are original.  Such a situation cannot be described by the
+simple-minded &lsquo;<samp><span class="samp">Accept-Language</span></samp>&rsquo; header.
+
+<p><a name="Offline-browsing"></a>
+
+<h3 class="section">3.4 Offline browsing</h3>
+
+<p><a name="index-proxyOffline-104"></a><a name="index-offline-browsing-105"></a><a name="index-browsing-offline-106"></a><a name="index-connectivity-107"></a><a name="index-warning-108"></a><a name="index-shift_002dclick-109"></a>
+In an ideal world, all machines would have perfect connectivity to the
+network at all times and servers would never crash.  In the real
+world, it may be necessary to avoid hitting the network and have
+Polipo serve stale objects from its cache.
+
+   <p>Setting <code>proxyOffline</code> to <code>true</code> prevents Polipo from
+contacting remote servers, no matter what.  This setting is suitable
+when you have no network connection whatsoever.
+
+   <p>If <code>proxyOffline</code> is false, Polipo's caching behaviour is
+controlled by a number of variables documented in <a href="#Tweaking-validation">Tweaking validation</a>.
+
+<p><a name="Server-statistics"></a>
+
+<h3 class="section">3.5 Server statistics</h3>
+
+<p><a name="index-serverExpireTime-110"></a><a name="index-server-statistics-111"></a><a name="index-round_002dtrip-time-112"></a><a name="index-transfer-rate-113"></a>
+In order to decide when to pipeline requests (see <a href="#Pipelining">Pipelining</a>) and
+whether to perform Poor Man's Multiplexing
+(see <a href="#Poor-Mans-Multiplexing">Poor Mans Multiplexing</a>), Polipo needs to keep statistics
+about servers.  These include the server's ability to handle
+persistent connections, the server's ability to handle pipelined
+requests, the round-trip time to the server, and the server's transfer
+rate.  The statistics are accessible from Polipo's web interface
+(see <a href="#Web-interface">Web interface</a>).
+
+   <p>The variable &lsquo;<samp><span class="samp">serverExpireTime</span></samp>&rsquo; (default 1 day) specifies how
+long such information remains valid.  If a server has not been
+accessed for a time interval of at least <code>serverExpireTime</code>,
+information about it will be discarded.
+
+   <p>As Polipo will eventually recover from incorrect information about a
+server, this value can be made fairly large.  The reason why it exists
+at all is to limit the amount of memory used up by information about
+servers.
+
+<p><a name="Server-side-behaviour"></a>
+<a name="Server_002dside-behaviour"></a>
+
+<h3 class="section">3.6 Tweaking server-side behaviour</h3>
+
+<p><a name="index-serverSlots-114"></a><a name="index-serverSlots1-115"></a><a name="index-serverMaxSlots-116"></a><a name="index-smallRequestTime-117"></a><a name="index-replyUnpipelineTime-118"></a><a name="index-replyUnpipelineSize-119"></a><a name="index-maxPipelineTrain-120"></a><a name="index-pipelineAdditionalRequests-121"></a><a name="index-maxSideBuffering-122"></a><a name="index-small-request-123"></a><a name="index-large-request-124"></a><a name="index-breaking-pipelines-125"></a>
+The most important piece of information about a server is whether it
+supports persistent connections.  If this is the case, Polipo will
+open at most <code>serverSlots</code> connections to that server
+(<code>serverSlots1</code> if the server only implements HTTP/1.0), and
+attempt to pipeline; if not, Polipo will hit the server harder,
+opening up to <code>serverMaxSlots</code> connections.
+
+   <p>Another use of server information is to decide whether to pipeline
+additional requests on a connection that already has in-flight
+requests.  This is controlled by the variable
+<code>pipelineAdditionalRequests</code>; if it is <code>false</code>, no
+additional requests will be pipelined.  If it is <code>true</code>,
+additional requests will be pipelined whenever possible.  If it is
+<code>maybe</code> (the default), additional requests will only be pipelined
+following <dfn>small</dfn> requests, where a small request one whose
+download is estimated to take no more than <code>smallRequestTime</code>
+(default 5<span class="dmn">s</span>).
+
+   <p>Sometimes, a request has been pipelined after a request that prompts a
+very large reply from the server; when that happens, the pipeline
+needs be broken in order to reduce latency.  A reply is <dfn>large</dfn>
+and will cause a pipeline to be broken if either its size is at least
+<code>replyUnpipelineSize</code> (default one megabyte) or else the server's
+transfer rate is known and the body is expected to take at least
+<code>replyUnpipelineTime</code> to download (default 15<span class="dmn">s</span>).
+
+   <p>The variable <code>maxPipelineTrain</code> defines the maximum number of
+requests that will be pipelined in a single write (default 10). 
+Setting this variable to a very low value might (or might not) fix
+interaction with some unreliable servers that the normal heuristics
+are unable to detect.
+
+   <p>The variable <code>maxSideBuffering</code> specifies how much data will be
+buffered in a PUT or POST request; it defaults to 1500 bytes.  Setting
+this variable to 0 may cause some media players that abuse the HTTP
+protocol to work.
+
+<p><a name="PMM"></a>
+
+<h3 class="section">3.7 Poor Man's Multiplexing</h3>
+
+<p><a name="index-Poor-Man_0027s-Multiplexing-126"></a><a name="index-multiplexing-127"></a><a name="index-pmmSize-128"></a><a name="index-pmmFirstSize-129"></a>
+By default, Polipo does not use Poor Man's Multiplexing (see <a href="#Poor-Mans-Multiplexing">Poor Mans Multiplexing</a>).  If the variable <code>pmmSize</code> is set to a
+positive value, Polipo will use PMM when speaking to servers that are
+known to support pipelining.  It will request resources by segments of
+<code>pmmSize</code> bytes.  The first segment requested has a size of
+<code>pmmFirstSize</code>, which defaults to twice <code>pmmSize</code>.
+
+   <p>PMM is an intrinsically unreliable technique.  Polipo makes heroic
+efforts to make it at least usable, requesting that the server disable
+PMM when not useful (by using the &lsquo;<samp><span class="samp">If-Range</span></samp>&rsquo; header) and
+disabling it on its own if a resource turns out to be dynamic. 
+Notwithstanding these precautions, unless the server
+cooperates<a rel="footnote" href="#fn-7" name="fnd-7"><sup>7</sup></a>,
+you will see failures when using PMM, which will usually result in
+blank pages and broken image icons; hitting <em>Reload</em> on your
+browser will usually cause Polipo to notice that something went wrong
+and correct the problem.
+
+<p><a name="Forbidden"></a>
+
+<h3 class="section">3.8 Forbidden and redirected URLs</h3>
+
+<p><a name="index-forbidden-130"></a><a name="index-redirect-131"></a><a name="index-web-counter-132"></a><a name="index-counter-133"></a><a name="index-web-bug-134"></a><a name="index-bug-135"></a><a name="index-advertisement-136"></a><a name="index-web-ad-137"></a><a name="index-banner-ad-138"></a>
+The web contains advertisements that a user-agent is supposed to
+download together with the requested pages.  Not only do
+advertisements pollute the user's brain, pushing them around takes
+time and uses up network bandwidth.
+
+   <p>Many so-called content providers also track user activities by using
+<dfn>web bugs</dfn>, tiny embedded images that cause a server to log where
+they are requested from.  Such images can be detected because they are
+usually uncacheable (see <a href="#Cache-transparency">Cache transparency</a>) and therefore logged
+by Polipo by default.
+
+   <p>Polipo can be configured to prevent certain URLs from reaching the
+browser, either by returning a <em>forbidden</em> error message to the
+user, or by <em>redirecting</em> such URLs to some other URL.
+
+<p><a name="Internal-forbidden-list"></a>
+
+<h4 class="subsection">3.8.1 Internal forbidden list</h4>
+
+<p><a name="index-forbidden-139"></a><a name="index-redirect-140"></a><a name="index-forbiddenFile-141"></a><a name="index-forbiddenUrl-142"></a><a name="index-forbiddenRedirectCode-143"></a>
+The file pointed at by the variable <code>forbiddenFile</code> (defaults to
+<samp><span class="file">~/.polipo-forbidden</span></samp> or <samp><span class="file">/etc/polipo/forbidden</span></samp>, whichever
+exists) specifies the set of URLs that should never be fetched.  If
+<code>forbiddenFile</code> is a directory, it will be recursively searched
+for files with forbidden URLs.
+
+   <p>Every line in a file listing forbidden URLs can either be a domain
+name &mdash; a string that doesn't contain any of &lsquo;<samp><span class="samp">/</span></samp>&rsquo;, &lsquo;<samp><span class="samp">*</span></samp>&rsquo; or
+&lsquo;<samp><span class="samp">\</span></samp>&rsquo; &mdash;, or a POSIX extended regular expression.  Blank lines are
+ignored, as are those that start with a hash sign &lsquo;<samp><span class="samp">#</span></samp>&rsquo;.
+
+   <p>By default, whenever it attempts to fetch a forbidden URL, the browser
+will receive a <em>403 forbidden</em> error from Polipo.  Some users
+prefer to have the browser display a different page or an image.
+
+   <p>If <code>forbiddenUrl</code> is not null, it should represent a URL to which
+all forbidden URLs will be redirected.  The kind of redirection used
+is specified by <code>forbiddenRedirectCode</code>; if this is 302 (the
+default) the redirection will be marked as temporary, if 301 it will
+be a permanent one.
+
+<p><a name="External-redirectors"></a>
+
+<h4 class="subsection">3.8.2 External redirectors</h4>
+
+<p><a name="index-forbidden-144"></a><a name="index-redirect-145"></a><a name="index-redirector-146"></a><a name="index-Squid_002dstyle-redirector-147"></a><a name="index-Adzapper-148"></a><a name="index-redirector-149"></a><a name="index-redirectorRedirectCode-150"></a>
+Polipo can also use an external process (a <dfn>Squid-style
+redirector</dfn>) to determine which URLs should be redirected.  The name
+of the redirector binary is determined from the variable
+<code>redirector</code>, and the kind of redirection generated is specified
+by <code>redirectorRedirectCode</code>, which should be 302 (the default) or
+301.
+
+   <p>For example, to use Adzapper to redirect ads to an innocuous image, just set
+<pre class="example">     redirector = /usr/bin/adzapper
+</pre>
+   <p><a name="DNS"></a>
+
+<h3 class="section">3.9 The domain name service</h3>
+
+<p><a name="index-DNS-151"></a><a name="index-name-server-152"></a><a name="index-gethostbyname-153"></a><a name="index-resolver-154"></a><a name="index-IPv6-155"></a><a name="index-dnsMaxTimeout-156"></a><a name="index-dnsUseGethostbyname-157"></a><a name="index-dnsNameServer-158"></a><a name="index-dnsNegativeTtl-159"></a><a name="index-dnsGethostbynameTtl-160"></a><a name="index-dnsQueryIPv6-161"></a>
+The low-level protocols beneath HTTP identify machines by IP
+addresses, sequences of four 8-bit integers such as
+&lsquo;<samp><span class="samp">199.232.41.10</span></samp>&rsquo;<a rel="footnote" href="#fn-8" name="fnd-8"><sup>8</sup></a>.  HTTP, on the other hand, and most application
+protocols, manipulate host names, strings such as &lsquo;<samp><span class="samp">www.polipo.org</span></samp>&rsquo;.
+
+   <p>The <dfn>domain name service</dfn> (DNS) is a distributed database that
+maps host names to IP addresses.  When an application wants to make
+use of the DNS, it invokes a <dfn>resolver</dfn>, a local library or
+process that contacts remote name servers.
+
+   <p>Polipo usually tries to speak the DNS protocol itself rather than
+using the system resolver<a rel="footnote" href="#fn-9" name="fnd-9"><sup>9</sup></a>.  Its
+precise behaviour is controlled by the value of
+<code>dnsUseGethostbyname</code>.  If <code>dnsUseGethostbyname</code> is
+<code>false</code>, Polipo never uses the system resolver.  If it is
+<code>reluctantly</code> (the default), Polipo tries to speak DNS and falls
+back to the system resolver if a name server could not be contacted. 
+If it is <code>happily</code>, Polipo tries to speak DNS, and falls back to
+the system resolver if the host couldn't be found for any reason (this
+is not a good idea for shared proxies).  Finally, if
+<code>dnsUseGethostbyname</code> is <code>true</code>, Polipo never tries to speak
+DNS itself and uses the system resolver straight away (this is not
+recommended).
+
+   <p>If the internal DNS support is used, Polipo must be given a recursive
+name server to speak to.  By default, this information is taken from
+the &lsquo;<samp><span class="samp">/etc/resolv.conf</span></samp>&rsquo; file; however, if you wish to use
+a different name server, you may set the variable <code>dnsNameServer</code>
+to an IP address<a rel="footnote" href="#fn-10" name="fnd-10"><sup>10</sup></a>.
+
+   <p>When the reply to a DNS request is late to come, Polipo will retry
+multiple times using an exponentially increasing timeout.  The maximum
+timeout used before Polipo gives up is defined by <code>dnsMaxTimeout</code>
+(default 60<span class="dmn">s</span>); the total time before Polipo gives up on a DNS
+query will be roughly twice <code>dnsMaxTimeout</code>.
+
+   <p>The variable <code>dnsNegativeTtl</code> specifies the time during which
+negative DNS information (information that a host <em>doesn't</em>
+exist) will be cached; this defaults to 120<span class="dmn">s</span>.  Increasing this
+value reduces both latency and network traffic but may cause a failed
+host not to be noticed when it comes back up.
+
+   <p>The variable <code>dnsQueryIPv6</code> specifies whether to query for IPv4
+or IPv6 addresses.  If <code>dnsQueryIPv6</code> is <code>false</code>, only IPv4
+addresses are queried.  If <code>dnsQueryIPv6</code> is <code>reluctantly</code>,
+both types of addresses are queried, but IPv4 addresses are preferred. 
+If <code>dnsQueryIPv6</code> is <code>happily</code> (the default), IPv6 addresses
+are preferred.  Finally, if <code>dnsQueryIPv6</code> is <code>true</code>, only
+IPv6 addresses are queried.
+
+   <p>If the system resolver is used, the value <code>dnsGethostbynameTtl</code>
+specifies the time during which a <code>gethostbyname</code> reply will be
+cached (default 5 minutes).
+
+<p><a name="Parent-proxies"></a>
+
+<h3 class="section">3.10 Parent proxies</h3>
+
+<p>Polipo will usually fetch instances directly from source servers as
+this configuration minimises latency.  In some cases, however, it may
+be useful to have Polipo fetch instances from a <dfn>parent</dfn> proxy.
+
+   <p>Polipo can use two protocols to speak to a parent proxy: HTTP and
+SOCKS.  When configured to use both HTTP and SOCKS proxying, Polipo
+will contact an HTTP proxy over SOCKS &mdash; in other words, SOCKS is
+considered as being at a lower (sub)layer than HTTP.
+
+<p><a name="HTTP-parent-proxies"></a>
+
+<h4 class="subsection">3.10.1 HTTP parent proxies</h4>
+
+<p><a name="index-parentProxy-162"></a><a name="index-parentAuthCredentials-163"></a><a name="index-parent-proxy-164"></a><a name="index-upstream-proxy-165"></a><a name="index-firewall-166"></a><a name="index-authentication-167"></a>
+The variable <code>parentProxy</code> specifies the hostname and port number
+of an HTTP parent proxy; it should have the form &lsquo;<samp><span class="samp">host:port</span></samp>&rsquo;.
+
+   <p>If the parent proxy requires authorisation, the username and password
+should be specified in the variable <code>parentAuthCredentials</code> in
+the form &lsquo;<samp><span class="samp">username:password</span></samp>&rsquo;.  Only <em>Basic</em> authentication
+is supported, which is vulnerable to replay attacks.
+
+   <p>The main application of the parent proxy support is to cross
+firewalls.  Given a machine, say <code>trurl</code>, with unrestricted
+access to the web, the following evades a firewall by using an
+encrypted compressed <code>ssh</code> link:
+<pre class="example">     $ ssh -f -C -L 8124:localhost:8123 trurl polipo
+     $ polipo parentProxy=localhost:8124
+</pre>
+   <p><a name="SOCKS-parent-proxies"></a>
+
+<h4 class="subsection">3.10.2 SOCKS parent proxies</h4>
+
+<p><a name="index-SOCKS-168"></a><a name="index-socksParentProxy-169"></a><a name="index-socksUserName-170"></a><a name="index-socksProxyType-171"></a>
+The variable <code>socksParentProxy</code> specifies the hostname and port
+number of a SOCKS parent proxy; it should have the form
+&lsquo;<samp><span class="samp">host:port</span></samp>&rsquo;.  The variant of the SOCKS protocol being used is
+defined by <code>socksProxyType</code>, which can be either &lsquo;<samp><span class="samp">socks4a</span></samp>&rsquo;
+or &lsquo;<samp><span class="samp">socks5</span></samp>&rsquo;; the latter value specifies &ldquo;SOCKS5 with
+hostnames&rdquo;, and is the default.
+
+   <p>The user name passed to the SOCKS4a proxy is defined by the variable
+<code>socksUserName</code>.  This value is currently ignored with a
+SOCKS5 proxy.
+
+   <p>The main application of the SOCKS support is to use
+<a href="http://tor.eff.org">Tor</a> to evade overly restrictive or
+misconfigured firewalls.  Assuming you have a Tor client running on
+the local host listening on the default port (9050), the following
+uses Tor for all outgoing HTTP traffic:
+<pre class="example">     $ polipo socksParentProxy=localhost:9050
+</pre>
+   <p><a name="Tuning-POST-and-PUT"></a>
+
+<h3 class="section">3.11 Tuning POST and PUT requests</h3>
+
+<p><a name="index-POST-request-172"></a><a name="index-PUT-request-173"></a><a name="index-expectContinue-174"></a>
+The main assumption behind the design of the HTTP protocol is that
+requests are idempotent: since a request can be repeated by a client,
+a server is allowed to drop a connection at any time.  This fact, more
+than anything else, explains the amazing scalability of the protocol.
+
+   <p>This assumption breaks down in the case of POST requests.  Indeed, a
+POST request usually causes some action to be performed (a page to be
+printed, a significant amount of money to be transferred from your
+bank account, or, in Florida, a vote to be registered), and such a
+request should not be repeated.
+
+   <p>The only solution to this problem is to reserve HTTP to idempotent
+activities, and use reliable protocols for action-effecting ones. 
+Notwithstanding that, HTTP/1.1 makes a weak attempt at making POST
+requests slightly more reliable and efficient than they are in
+HTTP/1.0.
+
+   <p>When speaking to an HTTP/1.1 server, an HTTP client is allowed to
+request that the server check <em>a priori</em> whether it intends to
+honour a POST request.  This is done by sending <dfn>an expectation</dfn>,
+a specific header with the request, &lsquo;<samp><span class="samp">Expect: 100-continue</span></samp>&rsquo;, and
+waiting for either an error message or a &lsquo;<samp><span class="samp">100 Continue</span></samp>&rsquo; reply
+from the server.  If the latter arrives, the client is welcome to send
+the rest of the POST request<a rel="footnote" href="#fn-11" name="fnd-11"><sup>11</sup></a>.
+
+   <p>Polipo's behaviour w.r.t. client expectations is controlled by the
+variable <code>expectContinue</code>.  If this variable is false, Polipo
+will never send an expectation to the server; if a client sends an
+expectation, Polipo will fail the expectation straight away, causing
+the client (if correctly implemented) to retry with no expectation. 
+If <code>expectContinue</code> is <code>maybe</code> (the default), Polipo will
+behave in a standards-compliant manner: it will forward expectations
+to the server when allowed to do so, and fail client expectations
+otherwise.  Finally, if <code>expectContinue</code> is <code>true</code>, Polipo
+will always send expectations when it is reasonable to do so; this
+violates the relevant standards and will break some websites, but
+might decrease network traffic under some circumstances.
+
+<p><a name="Tunnelling-connections"></a>
+
+<h3 class="section">3.12 Tunnelling connections</h3>
+
+<p><a name="index-tunnel-175"></a><a name="index-tunnelling-proxy-176"></a><a name="index-https-177"></a><a name="index-HTTP_002fSSL-178"></a><a name="index-rsync-179"></a><a name="index-CONNECT-180"></a><a name="index-tunnelAllowedPorts-181"></a>
+Polipo is an HTTP proxy; it proxies HTTP traffic, and clients using
+other protocols should either establish a direct connection to the
+server or use an <em>ad hoc</em> proxy.
+
+   <p>In many circumstances, however, it is not possible to establish
+a direct connection to the server, for example due to mis-configured
+firewalls or when trying to access the IPv4 Internet from an IPv6-only
+host.  In such situations, it is possible to have Polipo behave as
+a <em>tunnelling</em> proxy &mdash; a proxy that merely forwards traffic
+between the client and the server without understanding it.  Polipo
+enters tunnel mode when the client requests it by using the HTTP
+&lsquo;<samp><span class="samp">CONNECT</span></samp>&rsquo; method.
+
+   <p>Most web browsers will use this technique for HTTP over SSL if
+configured to use Polipo as their `https proxy'.  More generally, the
+author has successfully used it to cross mis-configured firewalls
+using OpenSSH, rsync, Jabber, IRC, etc.
+
+   <p>The variable <code>tunnelAllowedPorts</code> specifies the set of ports that
+Polipo will accept to tunnel traffic to.  It defaults to allowing ssh,
+HTTP, https, rsync, IMAP, imaps, POP, pops, Jabber, CVS and Git traffic.
+
+<p><a name="Caching"></a>
+
+<h2 class="chapter">4 Caching</h2>
+
+<p><a name="Cache-transparency"></a>
+
+<h3 class="section">4.1 Cache transparency and validation</h3>
+
+<p><a name="index-transparent-cache-182"></a><a name="index-cache-transparency-183"></a><a name="index-out_002dof_002ddate-instances-184"></a><a name="index-validation-185"></a><a name="index-revalidation-186"></a><a name="index-expire-187"></a><a name="index-stale-188"></a><a name="index-fresh-189"></a>
+If resources on a server change, it is possible for a cached instance
+to become out-of date.  Ideally, a cache would be perfectly
+<dfn>transparent</dfn>, meaning that it never serves an out-of-date
+instance; in a universe with a finite speed of signal propagation,
+however, this ideal is impossible to achieve.
+
+   <p>If a caching proxy decides that a cached instance is new enough to
+likely still be valid, it will directly serve the instance to the
+client; we then say that the cache decided that the instance is
+<dfn>fresh</dfn>.  When an instance is <dfn>stale</dfn> (not fresh), the cache
+will check with the upstream server whether the resource has changed;
+we say that the cached instance is being <dfn>revalidated</dfn>.
+
+   <p>In HTTP/1.1, responsibility for revalidation is shared between the
+client, the server and the proxy itself.  The client can override
+revalidation policy by using the &lsquo;<samp><span class="samp">Cache-Control</span></samp>&rsquo;
+header<a rel="footnote" href="#fn-12" name="fnd-12"><sup>12</sup></a>; for example,
+some user-agents will request end-to-end revalidation in this way when
+the user shift-clicks on <em>reload</em>.  The server may choose to
+specify revalidation policy by using the &lsquo;<samp><span class="samp">Expires</span></samp>&rsquo; and
+&lsquo;<samp><span class="samp">Cache-Control</span></samp>&rsquo; headers.  As to the proxy, it needs to choose a
+revalidation policy for instances with neither server- nor client-side
+cache control information.  Of course, nothing (except the HTTP/1.1
+spec, but that is easily ignored) prevents a proxy from overriding the
+client's and server's cache control directives.
+
+<p><a name="Tuning-validation"></a>
+
+<h4 class="subsection">4.1.1 Tuning validation behaviour</h4>
+
+<p><a name="index-age-190"></a><a name="index-maxAge-191"></a><a name="index-maxAgeFraction-192"></a><a name="index-maxExpiresAge-193"></a><a name="index-maxNoModifiedAge-194"></a>
+Polipo's revalidation behaviour is controlled by a number of
+variables.  In the following, an resource's <dfn>age</dfn> is the time since
+it was last validated, either because it was fetched from the server
+or because it was revalidated.
+
+   <p>The policy defining when cached instances become stale in the absence
+of server-provided information is controlled by the variables
+<code>maxAge</code>, <code>maxAgeFraction</code>, <code>maxExpiresAge</code> and
+<code>maxNoModifiedAge</code>.  If an instance has an &lsquo;<samp><span class="samp">Expires</span></samp>&rsquo; header,
+it becomes stale at the date given by that header, or when its age
+becomes larger than <code>maxExpiresAge</code>, whichever happens first.  If
+an instance has no &lsquo;<samp><span class="samp">Expires</span></samp>&rsquo; header but has a &lsquo;<samp><span class="samp">LastModified</span></samp>&rsquo;
+header, it becomes stale when its age reaches either
+<code>maxAgeFraction</code> of the time since it was last modified or else
+the absolute value <code>maxAge</code>, whichever happens first.  Finally,
+if an instance has neither &lsquo;<samp><span class="samp">Expires</span></samp>&rsquo; nor &lsquo;<samp><span class="samp">Last-Modified</span></samp>&rsquo;, it
+will become stale when its age reaches <code>maxNoModifiedAge</code>.
+
+<p><a name="Tweaking-validation"></a>
+
+<h4 class="subsection">4.1.2 Further tweaking of validation behaviour</h4>
+
+<p><a name="index-uncachable-195"></a><a name="index-vary-196"></a><a name="index-cacheIsShared-197"></a><a name="index-mindlesslyCacheVary-198"></a><a name="index-uncachableFile-199"></a><a name="index-dontCacheCookies-200"></a><a name="index-dontCacheRedirects-201"></a><a name="index-dontTrustVaryETag-202"></a>
+If <code>cacheIsShared</code> is false (it is true by default), Polipo will
+ignore the server-side &lsquo;<samp><span class="samp">Cache-Control</span></samp>&rsquo; directives &lsquo;<samp><span class="samp">private</span></samp>&rsquo;,
+&lsquo;<samp><span class="samp">s-maxage</span></samp>&rsquo; and &lsquo;<samp><span class="samp">proxy-must-revalidate</span></samp>&rsquo;.  This is highly
+desirable behaviour when the proxy is used by just one user, but might
+break some sites if the proxy is shared.
+
+   <p>When connectivity is very poor, the variable <code>relaxTransparency</code>
+can be used to cause Polipo to serve stale instances under some
+circumstances.  If <code>relaxTransparency</code> is <code>false</code> (the
+default), all stale instances are validated (see <a href="#Cache-transparency">Cache transparency</a>), and failures to connect are reported to the client. 
+This is the default mode of operation of most other proxies, and the
+least likely to surprise the user.
+
+   <p>If <code>relaxTransparency</code> is <code>maybe</code>, all stale instances are
+still validated, but a failure to connect is only reported as an error
+if no data is available in the cache.  If a connection fails and stale
+data is available, it is served to the client with a suitable HTTP/1.1
+&lsquo;<samp><span class="samp">Warning</span></samp>&rsquo; header.  Current user-agents do not provide visible
+indication of such warnings, however, and this setting will typically
+cause the browser to display stale data with no indication that
+anything went wrong.  It is useful when you are consulting a live web
+site but don't want to be bothered with failed revalidations.
+
+   <p>If <code>relaxTransparency</code> is <code>true</code>, missing data is fetched
+from remote servers, but stale data are unconditionally served with no
+validation.  Client-side &lsquo;<samp><span class="samp">Cache-Control</span></samp>&rsquo; directives are still
+honoured, which means that you can force an end-to-end revalidation
+from the browser's interface (typically by shift-clicking on
+&ldquo;reload&rdquo;).  This setting is only useful if you have very bad network
+connectivity or are consulting a very slow web site or one that
+provides incorrect cache control information<a rel="footnote" href="#fn-13" name="fnd-13"><sup>13</sup></a> and are willing to manually revalidate pages that you suspect
+are stale.
+
+   <p>If <code>mindlesslyCacheVary</code> is true, the presence of a &lsquo;<samp><span class="samp">Vary</span></samp>&rsquo;
+header (which indicates that content-negotiation occurred,
+see <a href="#Censor-Accept_002dLanguage">Censor Accept-Language</a>) is ignored, and cached negotiated
+instances are mindlessly returned to the client.  If it is false (the
+default), negotiated instances are revalidated on every client
+request.
+
+   <p>Unfortunately, a number of servers (most notably some versions of
+Apache's <code>mod_deflate</code> module) send objects with a &lsquo;<samp><span class="samp">ETag</span></samp>&rsquo;
+header that will confuse Polipo in the presence of a &lsquo;<samp><span class="samp">Vary</span></samp>&rsquo;
+header.  Polipo will make a reasonable check for consistency if
+&lsquo;<samp><span class="samp">dontTrustVaryETag</span></samp>&rsquo; is set to &lsquo;<samp><span class="samp">maybe</span></samp>&rsquo; (the default); it will
+systematically ignore &lsquo;<samp><span class="samp">ETag</span></samp>&rsquo; headers on objects with &lsquo;<samp><span class="samp">Vary</span></samp>&rsquo;
+headers if it is set to &lsquo;<samp><span class="samp">true</span></samp>&rsquo;.
+
+   <p>A number of websites incorrectly mark variable resources as cachable;
+such issues can be worked around in polipo by manually marking given
+categories of objects as uncachable.  If <code>dontCacheCookies</code> is
+true, all pages carrying HTTP cookies will be treated as uncachable. 
+If <code>dontCacheRedirects</code> is true, all redirects (301 and 302) will
+be treated as uncachable.  Finally, if everything else fails, a list
+of uncachable URLs can be given in the file specified by
+<code>uncachableFile</code>, which has the same format as the
+<code>forbiddenFile</code> (see <a href="#Internal-forbidden-list">Internal forbidden list</a>).  If not
+specified, its location defaults to &lsquo;<samp><span class="samp">~/.polipo-uncachable</span></samp>&rsquo; or
+&lsquo;<samp><span class="samp">/etc/polipo/uncachable</span></samp>&rsquo;, whichever exists.
+
+<p><a name="Memory-cache"></a>
+
+<h3 class="section">4.2 The in-memory cache</h3>
+
+<p>The in-memory cache consists of a list of HTTP and DNS objects
+maintained in least-recently used order.  An index to the in-memory
+cache is maintained as a (closed) hash table.
+
+   <p>When the in-memory cache grows beyond a certain size (controlled by a
+number of variables, see <a href="#Memory-usage">Memory usage</a>), or when a hash table
+collision occurs, resources are written out to disk.
+
+<p><a name="Disk-cache"></a>
+
+<h3 class="section">4.3 The on-disk cache</h3>
+
+<p><a name="index-filesystem-203"></a><a name="index-NFS-204"></a><a name="index-diskCacheRoot-205"></a><a name="index-maxDiskEntries-206"></a><a name="index-diskCacheWriteoutOnClose-207"></a><a name="index-diskCacheFilePermissions-208"></a><a name="index-diskCacheDirectoryPermissions-209"></a><a name="index-maxDiskCacheEntrySize-210"></a>
+The on-disk cache consists in a filesystem subtree rooted at
+a location defined by the variable <code>diskCacheRoot</code>, by default
+<code>"/var/cache/polipo/"</code>.  This directory should normally be
+writeable, readable and seekable by the user running Polipo.  While it
+is best to use a local filesystem for the on-disk cache, a NFSv3- or
+AFS-mounted filesystem should be safe in most implementations.  Do not
+use NFSv2, as it will cause cache corruption <a rel="footnote" href="#fn-14" name="fnd-14"><sup>14</sup></a>.
+
+   <p>If <code>diskCacheRoot</code> is an empty string, no disk cache is used.
+
+   <p>The value <code>maxDiskEntries</code> (32 by default) is the absolute
+maximum of file descriptors held open for on-disk objects.  When this
+limit is reached, Polipo will close descriptors on
+a least-recently-used basis.  This value should be set to be slightly
+larger than the number of resources that you expect to be live at
+a single time; defining the right notion of liveness is left as an
+exercise for the interested reader.
+
+   <p>The value <code>diskCacheWriteoutOnClose</code> (32<span class="dmn">kB</span> by default) is
+the amount of data that Polipo will write out when closing a disk
+file.  Writing out data when closing a file can avoid subsequently
+reopening it, but causes unnecessary work if the instance is later
+superseded.
+
+   <p>The integers <code>diskCacheDirectoryPermissions</code> and
+<code>diskCacheFilePermissions</code> are the Unix filesystem permissions
+with which files and directories are created in the on-disk cache;
+they default to &lsquo;<samp><span class="samp">0700</span></samp>&rsquo; and &lsquo;<samp><span class="samp">0600</span></samp>&rsquo; respectively.
+
+   <p>The variable <code>maxDiskCacheEntrySize</code> specifies the maximum size,
+in bytes, of an instance that is stored in the on-disk cache.  If set
+to -1 (the default), all objects are stored in the on-disk cache,
+
+<p><a name="Asynchronous-writing"></a>
+
+<h4 class="subsection">4.3.1 Asynchronous writing</h4>
+
+<p><a name="index-idleTime-211"></a><a name="index-maxObjectsWhenIdle-212"></a><a name="index-maxWriteoutWhenIdle-213"></a>
+When Polipo runs out of memory (see <a href="#Limiting-memory-usage">Limiting memory usage</a>), it
+will start discarding instances from its memory cache.  If a disk
+cache has been configured, it will write out any instance that it
+discards.  Any memory allocation that prompted the purge must then
+wait for the write to complete.
+
+   <p>In order to avoid the latency hit that this causes, Polipo will
+preemptively write out instances to the disk cache whenever it is
+idle.  The integer <code>idleTime</code> specifies the time during which
+Polipo will remain idle before it starts writing out random objects to
+the on-disk cache; this value defaults to 20<span class="dmn">s</span>.  You may want to
+decrease this value for a busy cache with little memory, or increase
+it if your cache is often idle and has a lot of memory.
+
+   <p>The value <code>maxObjectsWhenIdle</code> (default 32) specifies the maximum
+number of instances that an idle Polipo will write out without
+checking whether there's any new work to do.  The value
+<code>maxWriteoutWhenIdle</code> specifies the maximum amount of data
+(default 64<span class="dmn">kB</span>) that Polipo will write out without checking for
+new activity.  Increasing these values will make asynchronous
+write-out slightly faster, at the cost of possibly increasing Polipo's
+latency in some rare circumstances.
+
+<p><a name="Purging"></a>
+
+<h4 class="subsection">4.3.2 Purging the on-disk cache</h4>
+
+<p><a name="index-purging-214"></a><a name="index-diskCacheUnlinkTime-215"></a><a name="index-diskCacheTruncateTime-216"></a><a name="index-diskCacheTruncateSize-217"></a><a name="index-preciseExpiry-218"></a>
+Polipo never removes a file in its on-disk cache, except when it finds
+that the instance that it represents has been superseded by a newer
+version.  In order to keep the on-disk cache from growing without
+bound, it is necessary to <dfn>purge</dfn> it once in a while.  Purging the
+cache typically consists in removing some files, truncating large
+files (see <a href="#Partial-instances">Partial instances</a>) or moving them to off-line storage.
+
+   <p>Polipo itself can be used to purge its on-disk cache; this is done by
+invoking Polipo with the <samp><span class="option">-x</span></samp> flag.  This can safely be done
+when Polipo is running (see <a href="#Modifying-the-on_002ddisk-cache">Modifying the on-disk cache</a>).
+
+   <p>For a purge to be effective, it is necessary to cause Polipo to
+write-out its in-memory cache to disk (see <a href="#Stopping">Stopping</a>). 
+Additionally, Polipo will not necessarily notice the changed files
+until it attempts to access them; thus, you will want it to discard
+its in-memory cache after performing the purge.  The safe way to
+perform a purge is therefore:
+<pre class="example">     $ kill -USR1 <var>polipo-pid</var>
+     $ sleep 1
+     $ polipo -x
+     $ kill -USR2 <var>polipo-pid</var>
+</pre>
+   <p>The behaviour of the <samp><span class="option">-x</span></samp> flag is controlled by three
+configuration variables.  The variable <code>diskCacheUnlinkTime</code>
+specifies the time during which an on-disk entry should remain unused
+before it is eligible for removal; it defaults to 32 days.
+
+   <p>The variable <code>diskCacheTruncateTime</code> specifies the time for which
+an on-disk entry should remain unused before it is eligible for
+truncation; it defaults to 4 days and a half.  The variable
+<code>diskCacheTruncateSize</code> specifies the size at which files are
+truncated after they have not been accessed for
+<code>diskCacheTruncateTime</code>; it defaults to 1<span class="dmn">MB</span>.
+
+   <p>Usually, Polipo uses a file's modification time in order to determine
+whether it is old enough to be expirable.  This heuristic can be
+disabled by setting the variable <code>preciseExpiry</code> to true.
+
+<p><a name="Disk-format"></a>
+
+<h4 class="subsection">4.3.3 Format of the on-disk cache</h4>
+
+<p><a name="index-DISK_005fCACHE_005fBODY_005fOFFSET-219"></a><a name="index-on_002ddisk-file-220"></a><a name="index-on_002ddisk-cache-221"></a>
+The on-disk cache consists of a collection of files, one per instance. 
+The format of an on-disk resource is similar to that of an HTTP
+message: it starts with an HTTP status line, followed by HTTP headers,
+followed by a blank line (&lsquo;<samp><span class="samp">\r\n\r\n</span></samp>&rsquo;).  The blank line is
+optionally followed by a number of binary zeroes.  The body of the
+instance follows.
+
+   <p>The headers of an on-disk file have a few minor differences with HTTP
+messages.  Obviously, there is never a &lsquo;<samp><span class="samp">Transfer-Encoding</span></samp>&rsquo; line. 
+A few additional headers are used by Polipo for its internal
+bookkeeping:
+     <ul>
+<li>&lsquo;<samp><span class="samp">X-Polipo-Location</span></samp>&rsquo;: this is the URL of the resource stored in this
+file.  This is always present.
+
+     <li>&lsquo;<samp><span class="samp">X-Polipo-Date</span></samp>&rsquo;: this is Polipo's estimation of the date at which
+this instance was last validated, and is used for generating the
+&lsquo;<samp><span class="samp">Age</span></samp>&rsquo; header of HTTP messages.  This is optional, and only stored
+if different from the instance's date.
+
+     <li>&lsquo;<samp><span class="samp">X-Polipo-Access</span></samp>&rsquo;: this is the date when the instance was last
+accessed by Polipo, and is used for cache purging (see <a href="#Purging">Purging</a>). 
+This is optional, and is absent if the instance was never accessed.
+
+     <li>&lsquo;<samp><span class="samp">X-Polipo-Body-Offset</span></samp>&rsquo;: the presence of this line indicates that
+the blank line following the headers is followed by a number of zero
+bytes.  Its value is an integer, which indicates the offset since the
+beginning of the file at which the instance body actually starts. 
+This line is optional, and if absent the body starts immediately after
+the blank line.
+
+   </ul>
+
+<p><a name="Modifying-the-on-disk-cache"></a>
+<a name="Modifying-the-on_002ddisk-cache"></a>
+
+<h4 class="subsection">4.3.4 Modifying the on-disk cache</h4>
+
+<p><a name="index-on_002ddisk-cache-222"></a>
+It is safe to modify the on-disk cache while Polipo is running as long
+as no file is ever modified in place.  More precisely, the only safe
+operations are to unlink (remove, delete) files in the disk cache, or
+to atomically add new files to the cache (by performing an exclusive
+open, or by using one of the &lsquo;<samp><span class="samp">link</span></samp>&rsquo; or &lsquo;<samp><span class="samp">rename</span></samp>&rsquo; system
+calls).  It is <em>not</em> safe to truncate a file in place.
+
+<p><a name="Memory-usage"></a>
+
+<h2 class="chapter">5 Memory usage</h2>
+
+<p><a name="index-memory-223"></a>
+Polipo uses two distinct pools of memory, the <dfn>chunk pool</dfn> and
+the <dfn>malloc pool</dfn>.
+
+<p><a name="Chunk-memory"></a>
+
+<h3 class="section">5.1 Chunk memory</h3>
+
+<p><a name="index-CHUNK_005fSIZE-224"></a><a name="index-MALLOC_005fCHUNKS-225"></a><a name="index-chunk-226"></a><a name="index-memory-227"></a>
+Most of the memory used by Polipo is stored in chunks, fixed-size
+blocks of memory; the size of a chunk is defined by the compile-time
+constant <code>CHUNK_SIZE</code>, and defaults to 4096 bytes on 32-bit
+platforms, 8192 on 64-bit ones.  Chunks are used for storing object
+data (bodies of instances) and for temporary I/O buffers.  Increasing
+the chunk size increases performance somewhat, but at the cost of
+larger granularity of allocation and hence larger memory usage.
+
+   <p>By default, Polipo uses a hand-crafted memory allocator based on
+<code>mmap</code>(2) (<code>VirtualAlloc</code> under Windows) for allocating
+chunks; while this is very slightly faster than the stock memory
+allocator, its main benefit is that it limits memory fragmentation. 
+It is possible to disable the chunk allocator, and use
+<code>malloc</code>(3) for all memory allocation, by defining
+<code>MALLOC_CHUNKS</code> at compile time; this is probably only useful for
+debugging.
+
+   <p>There is one assumption made about <code>CHUNK_SIZE</code>:
+<code>CHUNK_SIZE</code> multiplied by the number of bits in an
+<code>unsigned int</code> (actually in a <code>ChunkBitmap</code> &mdash; see
+<samp><span class="file">chunk.c</span></samp>) must be a multiple of the page size, which is 4096 on
+most systems (8192 on Alpha, 65536 on Windows &mdash; go figure).
+
+   <p>As all network I/O will be performed in units of one to two chunks,
+<code>CHUNK_SIZE</code> should be at least equal to your network interface's
+MTU (typically 1500 bytes).  Additionally, as much I/O will be done at
+<code>CHUNK_SIZE</code>-aligned addresses, <code>CHUNK_SIZE</code> should ideally
+be a multiple of the page size.
+
+   <p>In summary, 2048, 4096, 8192 and 16384 are good choices for
+<code>CHUNK_SIZE</code>.
+
+<p><a name="Malloc-memory"></a>
+
+<h3 class="section">5.2 Malloc allocation</h3>
+
+<p><a name="index-malloc-228"></a><a name="index-memory-229"></a>
+Polipo uses the standard <code>malloc</code>(3) memory allocator for
+allocating small data structures (up to 100 bytes), small strings and
+atoms (unique strings).
+
+<p><a name="Limiting-memory-usage"></a>
+
+<h3 class="section">5.3 Limiting Polipo's memory usage</h3>
+
+<p><a name="index-limiting-memory-230"></a><a name="index-memory-231"></a>
+Polipo is designed to work well when given little memory, but will
+happily scale to larger configurations.  For that reason, you need to
+inform it of the amount of memory it can use.
+
+<p><a name="Limiting-chunk-usage"></a>
+
+<h4 class="subsection">5.3.1 Limiting chunk usage</h4>
+
+<p><a name="index-chunkHighMark-232"></a><a name="index-chunkCriticalMark-233"></a><a name="index-chunkLowMark-234"></a><a name="index-CHUNK_005fSIZE-235"></a><a name="index-memory-236"></a><a name="index-chunk-237"></a>
+You can limit Polipo's usage of chunk memory by setting
+<code>chunkHighMark</code> and <code>chunkLowMark</code>.
+
+   <p>The value <code>chunkHighMark</code> is the absolute maximum number of bytes
+of allocated chunk memory.  When this value is reached, Polipo will try
+to purge objects from its in-memory cache; if that fails to free memory,
+Polipo will start dropping connections.  This value defaults to
+24<span class="dmn">MB</span> or one quarter of the machine's physical memory, whichever is
+less.
+
+   <p>When chunk usage falls back below <code>chunkLowMark</code>, Polipo will
+stop discarding in-memory objects.  The value
+<code>chunkCriticalMark</code>, which should be somewhere between
+<code>chunkLowMark</code> and <code>chunkHighMark</code>, specifies the value
+above which Polipo will make heroic efforts to free memory, including
+punching holes in the middle of instances, but without dropping
+connections.
+
+   <p>Unless set explicitly, both <code>chunkLowMark</code> and
+<code>chunkCriticalMark</code> are computed automatically from
+<code>chunkHighMark</code>.
+
+<p><a name="Limiting-object-usage"></a>
+
+<h4 class="subsection">5.3.2 Limiting object usage</h4>
+
+<p><a name="index-objectHighMark-238"></a><a name="index-publicObjectLowMark-239"></a><a name="index-objectHashTableSize-240"></a>
+Besides limiting chunk usage, it is possible to limit Polipo's memory
+usage by bounding the number of objects it keeps in memory at any given
+time.  This is done with <code>objectHighMark</code> and
+<code>publicObjectLowMark</code>.
+
+   <p>The value <code>objectHighMark</code> is the absolute maximum of objects
+held in memory (including resources and server addresses).  When the
+number of in-memory objects that haven't been superseded yet falls
+below <code>publicObjectLowMark</code>, Polipo will stop writing out objects
+to disk (superseded objects are discarded as soon as possible).
+
+   <p>On 32-bit architectures, every object costs 108 bytes of memory, plus
+storage for every globally unique header that is not handled specially
+(hopefully negligible), plus an overhead of one word (4 bytes) for
+every chunk of data in the object.
+
+   <p>You may also want to change <code>objectHashTableSize</code>.  This is the
+size of the hash table used for holding objects; it should be a power
+of two and defaults to eight times <code>objectHighMark</code>.  Increasing
+this value will reduce the number of objects being written out to disk
+due to hash table collisions.  Every hash table entry costs one word.
+
+<p><a name="OS-usage-limits"></a>
+
+<h4 class="subsection">5.3.3 OS usage limits</h4>
+
+<p><a name="index-usage-limit-241"></a><a name="index-ulimit-242"></a><a name="index-OOM-killer-243"></a>
+Many operating systems permit limiting a process' memory usage by
+setting a <dfn>usage limit</dfn>; on most Unix-like systems, this is done
+with the <samp><span class="option">-v</span></samp> option to the <samp><span class="command">ulimit</span></samp> command. 
+Typically, the effect is to cause calls to the <code>malloc</code> and
+<code>mmap</code> library functions to fail.
+
+   <p>Polipo will usually react gracefully to failures to allocate
+memory<a rel="footnote" href="#fn-15" name="fnd-15"><sup>15</sup></a>.  Nonetheless, you should avoid using
+OS limits to limit Polipo's memory usage: when it hits an OS limit,
+Polipo cannot allocate the memory needed to schedule recovery from the
+out-of-memory condition, and has no choice other than to drop a
+connection.
+
+   <p>Unfortunately, some operating system kernels (notably certain Linux
+releases) fail to fail an allocation if no usage limit is given;
+instead, they either crash when memory is exhausted, or else start
+killing random processes with no advance warning<a rel="footnote" href="#fn-16" name="fnd-16"><sup>16</sup></a>.  On such systems, imposing an
+(unrealistically large) usage limit on Polipo is the safe thing to do.
+
+<p><a name="Copying"></a>
+
+<h2 class="unnumbered">Copying</h2>
+
+<p>You are allowed to do anything you wish with Polipo as long as you
+don't deny my right to be recognised as its author and you don't blame
+me if anything goes wrong.
+
+   <p>More formally, Polipo is distributed under the following terms:
+
+   <blockquote>
+Copyright &copy; 2003&ndash;2006 by Juliusz Chroboczek
+
+        <p>Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+        <p>The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+        <p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE. 
+</blockquote>
+   The last sentence is what happens when you allow lawyers to have it
+their way with a language.
+
+<p><a name="Variable-index"></a>
+
+<h2 class="unnumbered">Variable index</h2>
+
+<ul class="index-vr" compact>
+<li><a href="#index-allowedClients-75"><code>allowedClients</code></a>: <a href="#Access-control">Access control</a></li>
+<li><a href="#index-allowedPorts-88"><code>allowedPorts</code></a>: <a href="#Allowed-ports">Allowed ports</a></li>
+<li><a href="#index-authCredentials-73"><code>authCredentials</code></a>: <a href="#Access-control">Access control</a></li>
+<li><a href="#index-authRealm-74"><code>authRealm</code></a>: <a href="#Access-control">Access control</a></li>
+<li><a href="#index-bigBufferSize-92"><code>bigBufferSize</code></a>: <a href="#Tuning-the-HTTP-parser">Tuning the HTTP parser</a></li>
+<li><a href="#index-cacheIsShared-197"><code>cacheIsShared</code></a>: <a href="#Tweaking-validation">Tweaking validation</a></li>
+<li><a href="#index-censoredHeaders-98"><code>censoredHeaders</code></a>: <a href="#Censoring-headers">Censoring headers</a></li>
+<li><a href="#index-censorReferer-97"><code>censorReferer</code></a>: <a href="#Censoring-headers">Censoring headers</a></li>
+<li><a href="#index-CHUNK_005fSIZE-235"><code>CHUNK_SIZE</code></a>: <a href="#Limiting-chunk-usage">Limiting chunk usage</a></li>
+<li><a href="#index-CHUNK_005fSIZE-224"><code>CHUNK_SIZE</code></a>: <a href="#Chunk-memory">Chunk memory</a></li>
+<li><a href="#index-chunkCriticalMark-233"><code>chunkCriticalMark</code></a>: <a href="#Limiting-chunk-usage">Limiting chunk usage</a></li>
+<li><a href="#index-chunkHighMark-232"><code>chunkHighMark</code></a>: <a href="#Limiting-chunk-usage">Limiting chunk usage</a></li>
+<li><a href="#index-chunkLowMark-234"><code>chunkLowMark</code></a>: <a href="#Limiting-chunk-usage">Limiting chunk usage</a></li>
+<li><a href="#index-daemonise-39"><code>daemonise</code></a>: <a href="#Daemon">Daemon</a></li>
+<li><a href="#index-disableConfiguration-58"><code>disableConfiguration</code></a>: <a href="#Web-interface">Web interface</a></li>
+<li><a href="#index-disableLocalInterface-57"><code>disableLocalInterface</code></a>: <a href="#Web-interface">Web interface</a></li>
+<li><a href="#index-disableProxy-52"><code>disableProxy</code></a>: <a href="#Local-server">Local server</a></li>
+<li><a href="#index-disableServersList-59"><code>disableServersList</code></a>: <a href="#Web-interface">Web interface</a></li>
+<li><a href="#index-disableVia-100"><code>disableVia</code></a>: <a href="#Censoring-headers">Censoring headers</a></li>
+<li><a href="#index-DISK_005fCACHE_005fBODY_005fOFFSET-219"><code>DISK_CACHE_BODY_OFFSET</code></a>: <a href="#Disk-format">Disk format</a></li>
+<li><a href="#index-diskCacheDirectoryPermissions-209"><code>diskCacheDirectoryPermissions</code></a>: <a href="#Disk-cache">Disk cache</a></li>
+<li><a href="#index-diskCacheFilePermissions-208"><code>diskCacheFilePermissions</code></a>: <a href="#Disk-cache">Disk cache</a></li>
+<li><a href="#index-diskCacheRoot-205"><code>diskCacheRoot</code></a>: <a href="#Disk-cache">Disk cache</a></li>
+<li><a href="#index-diskCacheTruncateSize-217"><code>diskCacheTruncateSize</code></a>: <a href="#Purging">Purging</a></li>
+<li><a href="#index-diskCacheTruncateTime-216"><code>diskCacheTruncateTime</code></a>: <a href="#Purging">Purging</a></li>
+<li><a href="#index-diskCacheUnlinkTime-215"><code>diskCacheUnlinkTime</code></a>: <a href="#Purging">Purging</a></li>
+<li><a href="#index-diskCacheWriteoutOnClose-207"><code>diskCacheWriteoutOnClose</code></a>: <a href="#Disk-cache">Disk cache</a></li>
+<li><a href="#index-dnsGethostbynameTtl-160"><code>dnsGethostbynameTtl</code></a>: <a href="#DNS">DNS</a></li>
+<li><a href="#index-dnsMaxTimeout-156"><code>dnsMaxTimeout</code></a>: <a href="#DNS">DNS</a></li>
+<li><a href="#index-dnsNameServer-158"><code>dnsNameServer</code></a>: <a href="#DNS">DNS</a></li>
+<li><a href="#index-dnsNegativeTtl-159"><code>dnsNegativeTtl</code></a>: <a href="#DNS">DNS</a></li>
+<li><a href="#index-dnsQueryIPv6-161"><code>dnsQueryIPv6</code></a>: <a href="#DNS">DNS</a></li>
+<li><a href="#index-dnsUseGethostbyname-157"><code>dnsUseGethostbyname</code></a>: <a href="#DNS">DNS</a></li>
+<li><a href="#index-dontCacheCookies-200"><code>dontCacheCookies</code></a>: <a href="#Tweaking-validation">Tweaking validation</a></li>
+<li><a href="#index-dontCacheRedirects-201"><code>dontCacheRedirects</code></a>: <a href="#Tweaking-validation">Tweaking validation</a></li>
+<li><a href="#index-dontTrustVaryETag-202"><code>dontTrustVaryETag</code></a>: <a href="#Tweaking-validation">Tweaking validation</a></li>
+<li><a href="#index-expectContinue-174"><code>expectContinue</code></a>: <a href="#Tuning-POST-and-PUT">Tuning POST and PUT</a></li>
+<li><a href="#index-forbiddenFile-141"><code>forbiddenFile</code></a>: <a href="#Internal-forbidden-list">Internal forbidden list</a></li>
+<li><a href="#index-forbiddenRedirectCode-143"><code>forbiddenRedirectCode</code></a>: <a href="#Internal-forbidden-list">Internal forbidden list</a></li>
+<li><a href="#index-forbiddenUrl-142"><code>forbiddenUrl</code></a>: <a href="#Internal-forbidden-list">Internal forbidden list</a></li>
+<li><a href="#index-idleTime-211"><code>idleTime</code></a>: <a href="#Asynchronous-writing">Asynchronous writing</a></li>
+<li><a href="#index-laxHttpParser-91"><code>laxHttpParser</code></a>: <a href="#Tuning-the-HTTP-parser">Tuning the HTTP parser</a></li>
+<li><a href="#index-localDocumentRoot-51"><code>localDocumentRoot</code></a>: <a href="#Local-server">Local server</a></li>
+<li><a href="#index-logFacility-45"><code>logFacility</code></a>: <a href="#Logging">Logging</a></li>
+<li><a href="#index-logFile-43"><code>logFile</code></a>: <a href="#Logging">Logging</a></li>
+<li><a href="#index-logLevel-42"><code>logLevel</code></a>: <a href="#Logging">Logging</a></li>
+<li><a href="#index-logSyslog-44"><code>logSyslog</code></a>: <a href="#Logging">Logging</a></li>
+<li><a href="#index-MALLOC_005fCHUNKS-225"><code>MALLOC_CHUNKS</code></a>: <a href="#Chunk-memory">Chunk memory</a></li>
+<li><a href="#index-maxAge-191"><code>maxAge</code></a>: <a href="#Tuning-validation">Tuning validation</a></li>
+<li><a href="#index-maxAgeFraction-192"><code>maxAgeFraction</code></a>: <a href="#Tuning-validation">Tuning validation</a></li>
+<li><a href="#index-maxDiskCacheEntrySize-210"><code>maxDiskCacheEntrySize</code></a>: <a href="#Disk-cache">Disk cache</a></li>
+<li><a href="#index-maxDiskEntries-206"><code>maxDiskEntries</code></a>: <a href="#Disk-cache">Disk cache</a></li>
+<li><a href="#index-maxExpiresAge-193"><code>maxExpiresAge</code></a>: <a href="#Tuning-validation">Tuning validation</a></li>
+<li><a href="#index-maxNoModifiedAge-194"><code>maxNoModifiedAge</code></a>: <a href="#Tuning-validation">Tuning validation</a></li>
+<li><a href="#index-maxObjectsWhenIdle-212"><code>maxObjectsWhenIdle</code></a>: <a href="#Asynchronous-writing">Asynchronous writing</a></li>
+<li><a href="#index-maxPipelineTrain-120"><code>maxPipelineTrain</code></a>: <a href="#Server_002dside-behaviour">Server-side behaviour</a></li>
+<li><a href="#index-maxSideBuffering-122"><code>maxSideBuffering</code></a>: <a href="#Server_002dside-behaviour">Server-side behaviour</a></li>
+<li><a href="#index-maxWriteoutWhenIdle-213"><code>maxWriteoutWhenIdle</code></a>: <a href="#Asynchronous-writing">Asynchronous writing</a></li>
+<li><a href="#index-mindlesslyCacheVary-198"><code>mindlesslyCacheVary</code></a>: <a href="#Tweaking-validation">Tweaking validation</a></li>
+<li><a href="#index-objectHashTableSize-240"><code>objectHashTableSize</code></a>: <a href="#Limiting-object-usage">Limiting object usage</a></li>
+<li><a href="#index-objectHighMark-238"><code>objectHighMark</code></a>: <a href="#Limiting-object-usage">Limiting object usage</a></li>
+<li><a href="#index-parentAuthCredentials-163"><code>parentAuthCredentials</code></a>: <a href="#HTTP-parent-proxies">HTTP parent proxies</a></li>
+<li><a href="#index-parentProxy-162"><code>parentProxy</code></a>: <a href="#HTTP-parent-proxies">HTTP parent proxies</a></li>
+<li><a href="#index-pidFile-40"><code>pidFile</code></a>: <a href="#Daemon">Daemon</a></li>
+<li><a href="#index-pipelineAdditionalRequests-121"><code>pipelineAdditionalRequests</code></a>: <a href="#Server_002dside-behaviour">Server-side behaviour</a></li>
+<li><a href="#index-pmmFirstSize-129"><code>pmmFirstSize</code></a>: <a href="#PMM">PMM</a></li>
+<li><a href="#index-pmmSize-128"><code>pmmSize</code></a>: <a href="#PMM">PMM</a></li>
+<li><a href="#index-preciseExpiry-218"><code>preciseExpiry</code></a>: <a href="#Purging">Purging</a></li>
+<li><a href="#index-proxyAddress-72"><code>proxyAddress</code></a>: <a href="#Access-control">Access control</a></li>
+<li><a href="#index-proxyAddress-60"><code>proxyAddress</code></a>: <a href="#Client-connections">Client connections</a></li>
+<li><a href="#index-proxyName-99"><code>proxyName</code></a>: <a href="#Censoring-headers">Censoring headers</a></li>
+<li><a href="#index-proxyName-62"><code>proxyName</code></a>: <a href="#Client-connections">Client connections</a></li>
+<li><a href="#index-proxyOffline-104"><code>proxyOffline</code></a>: <a href="#Offline-browsing">Offline browsing</a></li>
+<li><a href="#index-proxyPort-61"><code>proxyPort</code></a>: <a href="#Client-connections">Client connections</a></li>
+<li><a href="#index-publicObjectLowMark-239"><code>publicObjectLowMark</code></a>: <a href="#Limiting-object-usage">Limiting object usage</a></li>
+<li><a href="#index-redirector-149"><code>redirector</code></a>: <a href="#External-redirectors">External redirectors</a></li>
+<li><a href="#index-redirectorRedirectCode-150"><code>redirectorRedirectCode</code></a>: <a href="#External-redirectors">External redirectors</a></li>
+<li><a href="#index-replyUnpipelineSize-119"><code>replyUnpipelineSize</code></a>: <a href="#Server_002dside-behaviour">Server-side behaviour</a></li>
+<li><a href="#index-replyUnpipelineTime-118"><code>replyUnpipelineTime</code></a>: <a href="#Server_002dside-behaviour">Server-side behaviour</a></li>
+<li><a href="#index-serverExpireTime-110"><code>serverExpireTime</code></a>: <a href="#Server-statistics">Server statistics</a></li>
+<li><a href="#index-serverMaxSlots-116"><code>serverMaxSlots</code></a>: <a href="#Server_002dside-behaviour">Server-side behaviour</a></li>
+<li><a href="#index-serverSlots-114"><code>serverSlots</code></a>: <a href="#Server_002dside-behaviour">Server-side behaviour</a></li>
+<li><a href="#index-serverSlots1-115"><code>serverSlots1</code></a>: <a href="#Server_002dside-behaviour">Server-side behaviour</a></li>
+<li><a href="#index-smallRequestTime-117"><code>smallRequestTime</code></a>: <a href="#Server_002dside-behaviour">Server-side behaviour</a></li>
+<li><a href="#index-socksParentProxy-169"><code>socksParentProxy</code></a>: <a href="#SOCKS-parent-proxies">SOCKS parent proxies</a></li>
+<li><a href="#index-socksProxyType-171"><code>socksProxyType</code></a>: <a href="#SOCKS-parent-proxies">SOCKS parent proxies</a></li>
+<li><a href="#index-socksUserName-170"><code>socksUserName</code></a>: <a href="#SOCKS-parent-proxies">SOCKS parent proxies</a></li>
+<li><a href="#index-tunnelAllowedPorts-181"><code>tunnelAllowedPorts</code></a>: <a href="#Tunnelling-connections">Tunnelling connections</a></li>
+<li><a href="#index-uncachableFile-199"><code>uncachableFile</code></a>: <a href="#Tweaking-validation">Tweaking validation</a></li>
+<li><a href="#index-useTemporarySourceAddress-84"><code>useTemporarySourceAddress</code></a>: <a href="#Contacting-servers">Contacting servers</a></li>
+   </ul><p><a name="Concept-index"></a>
+
+<h2 class="unnumbered">Concept index</h2>
+
+
+
+<ul class="index-cp" compact>
+<li><a href="#index-Accept_002dLanguage-103">Accept-Language</a>: <a href="#Censor-Accept_002dLanguage">Censor Accept-Language</a></li>
+<li><a href="#index-access-control-76">access control</a>: <a href="#Access-control">Access control</a></li>
+<li><a href="#index-address-63">address</a>: <a href="#Client-connections">Client connections</a></li>
+<li><a href="#index-advertisement-136">advertisement</a>: <a href="#Forbidden">Forbidden</a></li>
+<li><a href="#index-Adzapper-148">Adzapper</a>: <a href="#External-redirectors">External redirectors</a></li>
+<li><a href="#index-age-190">age</a>: <a href="#Tuning-validation">Tuning validation</a></li>
+<li><a href="#index-Allowed-ports-85">Allowed ports</a>: <a href="#Allowed-ports">Allowed ports</a></li>
+<li><a href="#index-anonymity-94">anonymity</a>: <a href="#Censoring-headers">Censoring headers</a></li>
+<li><a href="#index-Apache-26">Apache</a>: <a href="#Apache">Apache</a></li>
+<li><a href="#index-authentication-167">authentication</a>: <a href="#HTTP-parent-proxies">HTTP parent proxies</a></li>
+<li><a href="#index-authentication-77">authentication</a>: <a href="#Access-control">Access control</a></li>
+<li><a href="#index-banner-ad-138">banner ad</a>: <a href="#Forbidden">Forbidden</a></li>
+<li><a href="#index-breaking-pipelines-125">breaking pipelines</a>: <a href="#Server_002dside-behaviour">Server-side behaviour</a></li>
+<li><a href="#index-browser-configuration-46">browser configuration</a>: <a href="#Browser-configuration">Browser configuration</a></li>
+<li><a href="#index-browsing-offline-106">browsing offline</a>: <a href="#Offline-browsing">Offline browsing</a></li>
+<li><a href="#index-bug-135">bug</a>: <a href="#Forbidden">Forbidden</a></li>
+<li><a href="#index-cache-transparency-183">cache transparency</a>: <a href="#Cache-transparency">Cache transparency</a></li>
+<li><a href="#index-caching-7">caching</a>: <a href="#Proxies-and-caches">Proxies and caches</a></li>
+<li><a href="#index-chunk-237">chunk</a>: <a href="#Limiting-chunk-usage">Limiting chunk usage</a></li>
+<li><a href="#index-chunk-226">chunk</a>: <a href="#Chunk-memory">Chunk memory</a></li>
+<li><a href="#index-configuration-file-35">configuration file</a>: <a href="#Configuring-Polipo">Configuring Polipo</a></li>
+<li><a href="#index-configuration-variable-34">configuration variable</a>: <a href="#Configuring-Polipo">Configuring Polipo</a></li>
+<li><a href="#index-CONNECT-180">CONNECT</a>: <a href="#Tunnelling-connections">Tunnelling connections</a></li>
+<li><a href="#index-connectivity-107">connectivity</a>: <a href="#Offline-browsing">Offline browsing</a></li>
+<li><a href="#index-content-negotiation-102">content negotiation</a>: <a href="#Censor-Accept_002dLanguage">Censor Accept-Language</a></li>
+<li><a href="#index-cookies-96">cookies</a>: <a href="#Censoring-headers">Censoring headers</a></li>
+<li><a href="#index-counter-133">counter</a>: <a href="#Forbidden">Forbidden</a></li>
+<li><a href="#index-daemon-36">daemon</a>: <a href="#Daemon">Daemon</a></li>
+<li><a href="#index-DNS-151">DNS</a>: <a href="#DNS">DNS</a></li>
+<li><a href="#index-entity-4">entity</a>: <a href="#The-web">The web</a></li>
+<li><a href="#index-expire-187">expire</a>: <a href="#Cache-transparency">Cache transparency</a></li>
+<li><a href="#index-filesystem-203">filesystem</a>: <a href="#Disk-cache">Disk cache</a></li>
+<li><a href="#index-firewall-166">firewall</a>: <a href="#HTTP-parent-proxies">HTTP parent proxies</a></li>
+<li><a href="#index-forbidden-144">forbidden</a>: <a href="#External-redirectors">External redirectors</a></li>
+<li><a href="#index-forbidden-139">forbidden</a>: <a href="#Internal-forbidden-list">Internal forbidden list</a></li>
+<li><a href="#index-forbidden-130">forbidden</a>: <a href="#Forbidden">Forbidden</a></li>
+<li><a href="#index-Forbidden-ports-86">Forbidden ports</a>: <a href="#Allowed-ports">Allowed ports</a></li>
+<li><a href="#index-fresh-189">fresh</a>: <a href="#Cache-transparency">Cache transparency</a></li>
+<li><a href="#index-GET-request-17">GET request</a>: <a href="#POST-and-PUT">POST and PUT</a></li>
+<li><a href="#index-gethostbyname-153">gethostbyname</a>: <a href="#DNS">DNS</a></li>
+<li><a href="#index-Harvest-24">Harvest</a>: <a href="#Harvest-and-Squid">Harvest and Squid</a></li>
+<li><a href="#index-HEAD-request-18">HEAD request</a>: <a href="#POST-and-PUT">POST and PUT</a></li>
+<li><a href="#index-headers-90">headers</a>: <a href="#HTTP-tuning">HTTP tuning</a></li>
+<li><a href="#index-HTTP-89">HTTP</a>: <a href="#HTTP-tuning">HTTP tuning</a></li>
+<li><a href="#index-HTTP-5">HTTP</a>: <a href="#The-web">The web</a></li>
+<li><a href="#index-HTTP_002fSSL-178">HTTP/SSL</a>: <a href="#Tunnelling-connections">Tunnelling connections</a></li>
+<li><a href="#index-https-177">https</a>: <a href="#Tunnelling-connections">Tunnelling connections</a></li>
+<li><a href="#index-instance-3">instance</a>: <a href="#The-web">The web</a></li>
+<li><a href="#index-invocation-31">invocation</a>: <a href="#Polipo-Invocation">Polipo Invocation</a></li>
+<li><a href="#index-IPv6-155">IPv6</a>: <a href="#DNS">DNS</a></li>
+<li><a href="#index-IPv6-83">IPv6</a>: <a href="#Contacting-servers">Contacting servers</a></li>
+<li><a href="#index-IPv6-65">IPv6</a>: <a href="#Client-connections">Client connections</a></li>
+<li><a href="#index-Junkbuster-28">Junkbuster</a>: <a href="#Junkbuster">Junkbuster</a></li>
+<li><a href="#index-keep_002dalive-connection-11">keep-alive connection</a>: <a href="#Persistent-connections">Persistent connections</a></li>
+<li><a href="#index-large-request-124">large request</a>: <a href="#Server_002dside-behaviour">Server-side behaviour</a></li>
+<li><a href="#index-latency-9">latency</a>: <a href="#Latency-and-throughput">Latency and throughput</a></li>
+<li><a href="#index-limiting-memory-230">limiting memory</a>: <a href="#Limiting-memory-usage">Limiting memory usage</a></li>
+<li><a href="#index-local-server-54">local server</a>: <a href="#Local-server">Local server</a></li>
+<li><a href="#index-logging-41">logging</a>: <a href="#Logging">Logging</a></li>
+<li><a href="#index-loop-67">loop</a>: <a href="#Client-connections">Client connections</a></li>
+<li><a href="#index-loopback-address-78">loopback address</a>: <a href="#Access-control">Access control</a></li>
+<li><a href="#index-loopback-address-70">loopback address</a>: <a href="#Client-connections">Client connections</a></li>
+<li><a href="#index-malloc-228">malloc</a>: <a href="#Malloc-memory">Malloc memory</a></li>
+<li><a href="#index-memory-236">memory</a>: <a href="#Limiting-chunk-usage">Limiting chunk usage</a></li>
+<li><a href="#index-memory-231">memory</a>: <a href="#Limiting-memory-usage">Limiting memory usage</a></li>
+<li><a href="#index-memory-229">memory</a>: <a href="#Malloc-memory">Malloc memory</a></li>
+<li><a href="#index-memory-227">memory</a>: <a href="#Chunk-memory">Chunk memory</a></li>
+<li><a href="#index-memory-223">memory</a>: <a href="#Memory-usage">Memory usage</a></li>
+<li><a href="#index-multiple-addresses-82">multiple addresses</a>: <a href="#Contacting-servers">Contacting servers</a></li>
+<li><a href="#index-multiplexing-127">multiplexing</a>: <a href="#PMM">PMM</a></li>
+<li><a href="#index-multiplexing-14">multiplexing</a>: <a href="#Poor-Mans-Multiplexing">Poor Mans Multiplexing</a></li>
+<li><a href="#index-name-server-152">name server</a>: <a href="#DNS">DNS</a></li>
+<li><a href="#index-negotiation-101">negotiation</a>: <a href="#Censor-Accept_002dLanguage">Censor Accept-Language</a></li>
+<li><a href="#index-NFS-204">NFS</a>: <a href="#Disk-cache">Disk cache</a></li>
+<li><a href="#index-offline-browsing-105">offline browsing</a>: <a href="#Offline-browsing">Offline browsing</a></li>
+<li><a href="#index-on_002ddisk-cache-222">on-disk cache</a>: <a href="#Modifying-the-on_002ddisk-cache">Modifying the on-disk cache</a></li>
+<li><a href="#index-on_002ddisk-cache-221">on-disk cache</a>: <a href="#Disk-format">Disk format</a></li>
+<li><a href="#index-on_002ddisk-file-220">on-disk file</a>: <a href="#Disk-format">Disk format</a></li>
+<li><a href="#index-OOM-killer-243">OOM killer</a>: <a href="#OS-usage-limits">OS usage limits</a></li>
+<li><a href="#index-Oops-30">Oops</a>: <a href="#Oops">Oops</a></li>
+<li><a href="#index-OPTIONS-request-21">OPTIONS request</a>: <a href="#POST-and-PUT">POST and PUT</a></li>
+<li><a href="#index-out_002dof_002ddate-instances-184">out-of-date instances</a>: <a href="#Cache-transparency">Cache transparency</a></li>
+<li><a href="#index-parent-proxy-164">parent proxy</a>: <a href="#HTTP-parent-proxies">HTTP parent proxies</a></li>
+<li><a href="#index-partial-instance-15">partial instance</a>: <a href="#Partial-instances">Partial instances</a></li>
+<li><a href="#index-password-81">password</a>: <a href="#Access-control">Access control</a></li>
+<li><a href="#index-persistent-connection-10">persistent connection</a>: <a href="#Persistent-connections">Persistent connections</a></li>
+<li><a href="#index-pid-38">pid</a>: <a href="#Daemon">Daemon</a></li>
+<li><a href="#index-Pipelining-12">Pipelining</a>: <a href="#Pipelining">Pipelining</a></li>
+<li><a href="#index-Poor-Man_0027s-Multiplexing-126">Poor Man's Multiplexing</a>: <a href="#PMM">PMM</a></li>
+<li><a href="#index-Poor-Man_0027s-Multiplexing-13">Poor Man's Multiplexing</a>: <a href="#Poor-Mans-Multiplexing">Poor Mans Multiplexing</a></li>
+<li><a href="#index-port-64">port</a>: <a href="#Client-connections">Client connections</a></li>
+<li><a href="#index-ports-87">ports</a>: <a href="#Allowed-ports">Allowed ports</a></li>
+<li><a href="#index-POST-request-172">POST request</a>: <a href="#Tuning-POST-and-PUT">Tuning POST and PUT</a></li>
+<li><a href="#index-POST-request-20">POST request</a>: <a href="#POST-and-PUT">POST and PUT</a></li>
+<li><a href="#index-privacy-93">privacy</a>: <a href="#Censoring-headers">Censoring headers</a></li>
+<li><a href="#index-Privoxy-29">Privoxy</a>: <a href="#Privoxy">Privoxy</a></li>
+<li><a href="#index-PROPFIND-request-22">PROPFIND request</a>: <a href="#POST-and-PUT">POST and PUT</a></li>
+<li><a href="#index-proxy-23">proxy</a>: <a href="#Other-HTTP-proxies">Other HTTP proxies</a></li>
+<li><a href="#index-proxy-6">proxy</a>: <a href="#Proxies-and-caches">Proxies and caches</a></li>
+<li><a href="#index-proxy-loop-66">proxy loop</a>: <a href="#Client-connections">Client connections</a></li>
+<li><a href="#index-proxy-name-68">proxy name</a>: <a href="#Client-connections">Client connections</a></li>
+<li><a href="#index-purging-214">purging</a>: <a href="#Purging">Purging</a></li>
+<li><a href="#index-PUT-request-173">PUT request</a>: <a href="#Tuning-POST-and-PUT">Tuning POST and PUT</a></li>
+<li><a href="#index-PUT-request-19">PUT request</a>: <a href="#POST-and-PUT">POST and PUT</a></li>
+<li><a href="#index-range-request-16">range request</a>: <a href="#Partial-instances">Partial instances</a></li>
+<li><a href="#index-redirect-145">redirect</a>: <a href="#External-redirectors">External redirectors</a></li>
+<li><a href="#index-redirect-140">redirect</a>: <a href="#Internal-forbidden-list">Internal forbidden list</a></li>
+<li><a href="#index-redirect-131">redirect</a>: <a href="#Forbidden">Forbidden</a></li>
+<li><a href="#index-redirector-146">redirector</a>: <a href="#External-redirectors">External redirectors</a></li>
+<li><a href="#index-Referer-95">Referer</a>: <a href="#Censoring-headers">Censoring headers</a></li>
+<li><a href="#index-resolver-154">resolver</a>: <a href="#DNS">DNS</a></li>
+<li><a href="#index-resource-2">resource</a>: <a href="#The-web">The web</a></li>
+<li><a href="#index-revalidation-186">revalidation</a>: <a href="#Cache-transparency">Cache transparency</a></li>
+<li><a href="#index-round_002dtrip-time-112">round-trip time</a>: <a href="#Server-statistics">Server statistics</a></li>
+<li><a href="#index-rsync-179">rsync</a>: <a href="#Tunnelling-connections">Tunnelling connections</a></li>
+<li><a href="#index-runtime-configuration-55">runtime configuration</a>: <a href="#Web-interface">Web interface</a></li>
+<li><a href="#index-runtime-configuration-32">runtime configuration</a>: <a href="#Configuring-Polipo">Configuring Polipo</a></li>
+<li><a href="#index-security-79">security</a>: <a href="#Access-control">Access control</a></li>
+<li><a href="#index-security-71">security</a>: <a href="#Client-connections">Client connections</a></li>
+<li><a href="#index-server-statistics-111">server statistics</a>: <a href="#Server-statistics">Server statistics</a></li>
+<li><a href="#index-shift_002dclick-109">shift-click</a>: <a href="#Offline-browsing">Offline browsing</a></li>
+<li><a href="#index-shutting-down-49">shutting down</a>: <a href="#Stopping">Stopping</a></li>
+<li><a href="#index-signals-48">signals</a>: <a href="#Stopping">Stopping</a></li>
+<li><a href="#index-small-request-123">small request</a>: <a href="#Server_002dside-behaviour">Server-side behaviour</a></li>
+<li><a href="#index-SOCKS-168">SOCKS</a>: <a href="#SOCKS-parent-proxies">SOCKS parent proxies</a></li>
+<li><a href="#index-Squid-25">Squid</a>: <a href="#Harvest-and-Squid">Harvest and Squid</a></li>
+<li><a href="#index-Squid_002dstyle-redirector-147">Squid-style redirector</a>: <a href="#External-redirectors">External redirectors</a></li>
+<li><a href="#index-stale-188">stale</a>: <a href="#Cache-transparency">Cache transparency</a></li>
+<li><a href="#index-stopping-50">stopping</a>: <a href="#Stopping">Stopping</a></li>
+<li><a href="#index-terminal-37">terminal</a>: <a href="#Daemon">Daemon</a></li>
+<li><a href="#index-throughput-8">throughput</a>: <a href="#Latency-and-throughput">Latency and throughput</a></li>
+<li><a href="#index-transfer-rate-113">transfer rate</a>: <a href="#Server-statistics">Server statistics</a></li>
+<li><a href="#index-transparent-cache-182">transparent cache</a>: <a href="#Cache-transparency">Cache transparency</a></li>
+<li><a href="#index-tunnel-175">tunnel</a>: <a href="#Tunnelling-connections">Tunnelling connections</a></li>
+<li><a href="#index-tunnelling-proxy-176">tunnelling proxy</a>: <a href="#Tunnelling-connections">Tunnelling connections</a></li>
+<li><a href="#index-ulimit-242">ulimit</a>: <a href="#OS-usage-limits">OS usage limits</a></li>
+<li><a href="#index-uncachable-195">uncachable</a>: <a href="#Tweaking-validation">Tweaking validation</a></li>
+<li><a href="#index-upstream-proxy-165">upstream proxy</a>: <a href="#HTTP-parent-proxies">HTTP parent proxies</a></li>
+<li><a href="#index-URL-1">URL</a>: <a href="#The-web">The web</a></li>
+<li><a href="#index-usage-limit-241">usage limit</a>: <a href="#OS-usage-limits">OS usage limits</a></li>
+<li><a href="#index-user_002dagent-configuration-47">user-agent configuration</a>: <a href="#Browser-configuration">Browser configuration</a></li>
+<li><a href="#index-username-80">username</a>: <a href="#Access-control">Access control</a></li>
+<li><a href="#index-validation-185">validation</a>: <a href="#Cache-transparency">Cache transparency</a></li>
+<li><a href="#index-variable-33">variable</a>: <a href="#Configuring-Polipo">Configuring Polipo</a></li>
+<li><a href="#index-vary-196">vary</a>: <a href="#Tweaking-validation">Tweaking validation</a></li>
+<li><a href="#index-via-69">via</a>: <a href="#Client-connections">Client connections</a></li>
+<li><a href="#index-warning-108">warning</a>: <a href="#Offline-browsing">Offline browsing</a></li>
+<li><a href="#index-web-ad-137">web ad</a>: <a href="#Forbidden">Forbidden</a></li>
+<li><a href="#index-web-bug-134">web bug</a>: <a href="#Forbidden">Forbidden</a></li>
+<li><a href="#index-web-counter-132">web counter</a>: <a href="#Forbidden">Forbidden</a></li>
+<li><a href="#index-web-interface-56">web interface</a>: <a href="#Web-interface">Web interface</a></li>
+<li><a href="#index-web-server-53">web server</a>: <a href="#Local-server">Local server</a></li>
+<li><a href="#index-WWWOFFLE-27">WWWOFFLE</a>: <a href="#WWWOFFLE">WWWOFFLE</a></li>
+   </ul><div class="footnote">
+<hr>
+<a name="texinfo-footnotes-in-document"></a><h4>Footnotes</h4><p class="footnote"><small>[<a name="fn-1" href="#fnd-1">1</a>]</small> The X11 protocol
+fundamentally relies on pipelining.  NNTP does support pipelining. 
+SMTP doesn't, while ESMTP makes it an option.  FTP does support
+pipelining on the control connection.</p>
+
+   <p class="footnote"><small>[<a name="fn-2" href="#fnd-2">2</a>]</small> Other client-side
+implementations of HTTP that make use of pipelining include
+<a href="http://www.opera.com/">Opera</a>, recent versions of
+<a href="http://www.mozilla.org">Mozilla</a>, APT (the package downloader
+used by <a href="http://www.debian.org">Debian</a> GNU/Linux) and LFTP.</p>
+
+   <p class="footnote"><small>[<a name="fn-3" href="#fnd-3">3</a>]</small> HTML forms should use the
+&lsquo;<samp><span class="samp">GET</span></samp>&rsquo; method when the form has no side-effect as this makes the
+results cacheable.</p>
+
+   <p class="footnote"><small>[<a name="fn-4" href="#fnd-4">4</a>]</small> Recent versions of Squid support
+instances larger than available memory by using a hack that the
+authors call a &ldquo;sliding window algorithm&rdquo;.</p>
+
+   <p class="footnote"><small>[<a name="fn-5" href="#fnd-5">5</a>]</small> It is not quite clear to me whether HTTP digest
+authentication is worth implementing.  On the one hand, if implemented
+correctly, it appears to provide secure authentication; on the other
+hand, and unlike ssh or SSL, it doesn't make any attempt at ensuring
+privacy, and its optional integrity guarantees are impossible to
+implement without significantly impairing latency.</p>
+
+   <p class="footnote"><small>[<a name="fn-6" href="#fnd-6">6</a>]</small> HTTP contains many mistakes
+and even one spelling error.</p>
+
+   <p class="footnote"><small>[<a name="fn-7" href="#fnd-7">7</a>]</small> More precisely, unless CGI scripts cooperate.</p>
+
+   <p class="footnote"><small>[<a name="fn-8" href="#fnd-8">8</a>]</small> Or sequences of eight 16-bit integers if
+you are running IPv6.</p>
+
+   <p class="footnote"><small>[<a name="fn-9" href="#fnd-9">9</a>]</small> The Unix interface to the resolver
+is provided by the <code>gethostbyname</code>(3) library call
+(<code>getaddrinfo</code>(3) on recent systems), which was designed at
+a time when a host lookup consisted in searching for one of five hosts
+in a &lsquo;<samp><span class="samp">HOSTS.TXT</span></samp>&rsquo; file.  The <code>gethostbyname</code> call is
+<dfn>blocking</dfn>, meaning that all activity must cease while a host
+lookup is in progress.  When the call eventually returns, it doesn't
+provide a <dfn>time to live</dfn> (TTL) value to indicate how long the
+address may be cached.  For these reasons, <code>gethostbyname</code> is
+hardly useful for programs that need to contact more than a few hosts. 
+(Recent systems replace <code>gethostbyname</code>(3) by
+<code>getaddrinfo</code>(3), which is reentrant.  While this removes one
+important problem that multi-threaded programs encounter, it doesn't
+solve any of the other issues with <code>gethostbyname</code>.)</p>
+
+   <p class="footnote"><small>[<a name="fn-10" href="#fnd-10">10</a>]</small> While Polipo does its own caching of DNS
+data, I recommend that you run a local caching name server.  I am very
+happy with <a href="http://home.t-online.de/home/Moestl/"><code>pdnsd</code></a>,
+notwithstanding its somewhat bizarre handling of TCP connections.</p>
+
+   <p class="footnote"><small>[<a name="fn-11" href="#fnd-11">11</a>]</small> This, of course, is only part of
+the story.  Additionally, the server is not required to reply with
+&lsquo;<samp><span class="samp">100 Continue</span></samp>&rsquo;, hence the client must implement a timeout. 
+Furthermore, according to the obsolete RFC2068, the server is
+allowed to spontaneously send &lsquo;<samp><span class="samp">100 Continue</span></samp>&rsquo;, so the client must
+be prepared to ignore such a reply at any time.</p>
+
+   <p class="footnote"><small>[<a name="fn-12" href="#fnd-12">12</a>]</small> Or the obsolete &lsquo;<samp><span class="samp">Pragma</span></samp>&rsquo; header.</p>
+
+   <p class="footnote"><small>[<a name="fn-13" href="#fnd-13">13</a>]</small> This is for
+example the case of <code>www.microsoft.com</code>, and also of websites
+generated by a popular Free content management system written in
+Python.</p>
+
+   <p class="footnote"><small>[<a name="fn-14" href="#fnd-14">14</a>]</small> Polipo assumes
+that &lsquo;<samp><span class="samp">open(O_CREAT | O_EXCL)</span></samp>&rsquo; works reliably.</p>
+
+   <p class="footnote"><small>[<a name="fn-15" href="#fnd-15">15</a>]</small> There are exactly three places in the code where
+Polipo will give up and exit if out of memory; all three are extremely
+unlikely to happen in practice.</p>
+
+   <p class="footnote"><small>[<a name="fn-16" href="#fnd-16">16</a>]</small> How I wish
+for a &lsquo;<samp><span class="samp">SIGXMEM</span></samp>&rsquo; signal.</p>
+
+   <hr></div>
+
+</body></html>
+

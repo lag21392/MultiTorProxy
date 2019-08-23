@@ -1,0 +1,13 @@
+C:\Users\LAG\source\repos\MultiTorProxy_\MultiTorProxy_\bin\Debug\MultiTorProxy_.exe.config
+C:\Users\LAG\source\repos\MultiTorProxy_\MultiTorProxy_\bin\Debug\MultiTorProxy_.exe
+C:\Users\LAG\source\repos\MultiTorProxy_\MultiTorProxy_\bin\Debug\MultiTorProxy_.pdb
+C:\Users\LAG\source\repos\MultiTorProxy_\MultiTorProxy_\obj\Debug\MultiTorProxy_.csprojAssemblyReference.cache
+C:\Users\LAG\source\repos\MultiTorProxy_\MultiTorProxy_\obj\Debug\MultiTorProxy_.Form1.resources
+C:\Users\LAG\source\repos\MultiTorProxy_\MultiTorProxy_\obj\Debug\MultiTorProxy_.Properties.Resources.resources
+C:\Users\LAG\source\repos\MultiTorProxy_\MultiTorProxy_\obj\Debug\MultiTorProxy_.csproj.GenerateResource.cache
+C:\Users\LAG\source\repos\MultiTorProxy_\MultiTorProxy_\obj\Debug\MultiTorProxy_.csproj.CoreCompileInputs.cache
+C:\Users\LAG\source\repos\MultiTorProxy_\MultiTorProxy_\obj\Debug\MultiTorProxy_.exe
+C:\Users\LAG\source\repos\MultiTorProxy_\MultiTorProxy_\obj\Debug\MultiTorProxy_.pdb
+C:\Users\LAG\source\repos\MultiTorProxy_\MultiTorProxy_\bin\Debug\WebDriver.dll
+C:\Users\LAG\source\repos\MultiTorProxy_\MultiTorProxy_\bin\Debug\WebDriver.xml
+C:\Users\LAG\source\repos\MultiTorProxy_\MultiTorProxy_\obj\Debug\MultiTorProxy_.csproj.CopyComplete
